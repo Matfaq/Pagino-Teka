@@ -4,131 +4,113 @@ using Pagino_Teka.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 
-namespace Pagino_Teka.Database
+namespace Pagino_Teka.Repositories
 {
     public class BookRepository
     {
-        private readonly DatabaseService _databaseService;
+        private readonly DatabaseService _db;
 
-        public BookRepository(DatabaseService databaseService)
+        public BookRepository(DatabaseService db)
         {
-            _databaseService = databaseService;
+            _db = db;
         }
 
-        public List<Genre> GetAllGenres()
+        public void Add(Book book)
         {
-            var genres = new List<Genre>();
-            DataTable table = _databaseService.ExecuteQuery("SELECT id, name FROM BookGenres ORDER BY name;");
-            foreach (DataRow row in table.Rows)
+            string sql = @"INSERT INTO books (title, isbn, publisher_id, series_id, series_number, edition_type, notes)
+                           VALUES (@title, @isbn, @publisher_id, @series_id, @series_number, @edition_type, @notes);
+                           SELECT last_insert_rowid();";
+
+            var id = Convert.ToInt32(_db.ExecuteScalar(sql,
+                new SQLiteParameter("@title", book.Title),
+                new SQLiteParameter("@isbn", book.ISBN),
+                new SQLiteParameter("@publisher_id", book.Publisher?.Id),
+                new SQLiteParameter("@series_id", book.Series?.Id),
+                new SQLiteParameter("@series_number", book.SeriesNumber),
+                new SQLiteParameter("@edition_type", (int)book.EditionType),
+                new SQLiteParameter("@notes", book.Notes ?? string.Empty)
+            ));
+
+            book.Id = id;
+
+            // Zapis gatunków
+            foreach (var genre in book.Genres)
             {
-                genres.Add(new Genre
-                {
-                    Id = Convert.ToInt32(row["id"]),
-                    Name = row["name"].ToString() ?? string.Empty
-                });
+                _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
+                    new SQLiteParameter("@book_id", id),
+                    new SQLiteParameter("@genre_id", genre.Id));
             }
-            return genres;
         }
 
-        public int AddBook(Book book, int mainAuthorId, int genreId, int? seriesId, int? tome, int publisherId)
+        public void Update(Book book)
         {
-            string sql = @"
-INSERT INTO books
-(title, author_id, isbn, genre_id, pages, read_time, book_series_id, tome, published_kind, adaptation, publisher_id, image, description)
-VALUES
-(@title, @auth_id, @isbn, @genre_id, @pages, @read_time, @series_id, @tome, '', '', @publisher_id, @image, @description);
-";
-            _databaseService.ExecuteNonQuery(sql,
-                new SqliteParameter("@title", book.Title),
-                new SqliteParameter("@auth_id", mainAuthorId),
-                new SqliteParameter("@isbn", book.Isbn),
-                new SqliteParameter("@genre_id", genreId),
-                new SqliteParameter("@pages", book.Pages),
-                new SqliteParameter("@read_time", book.ReadTime),
-                new SqliteParameter("@series_id", seriesId ?? (object)DBNull.Value),
-                new SqliteParameter("@tome", tome ?? (object)DBNull.Value),
-                new SqliteParameter("@publisher_id", publisherId),
-                new SqliteParameter("@image", book.ImagePath ?? string.Empty),
-                new SqliteParameter("@description", book.Description ?? string.Empty)
+            string sql = @"UPDATE books SET 
+                           title = @title,
+                           isbn = @isbn,
+                           publisher_id = @publisher_id,
+                           series_id = @series_id,
+                           series_number = @series_number,
+                           edition_type = @edition_type,
+                           notes = @notes
+                           WHERE id = @id";
+
+            _db.ExecuteNonQuery(sql,
+                new SQLiteParameter("@title", book.Title),
+                new SQLiteParameter("@isbn", book.ISBN),
+                new SQLiteParameter("@publisher_id", book.Publisher?.Id),
+                new SQLiteParameter("@series_id", book.Series?.Id),
+                new SQLiteParameter("@series_number", book.SeriesNumber),
+                new SQLiteParameter("@edition_type", (int)book.EditionType),
+                new SQLiteParameter("@notes", book.Notes ?? string.Empty),
+                new SQLiteParameter("@id", book.Id)
             );
 
-            object idObj = _databaseService.ExecuteScalar("SELECT last_insert_rowid();");
-            return Convert.ToInt32(idObj);
+            // Aktualizacja gatunków
+            _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
+                new SQLiteParameter("@book_id", book.Id));
+
+            foreach (var genre in book.Genres)
+            {
+                _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
+                    new SQLiteParameter("@book_id", book.Id),
+                    new SQLiteParameter("@genre_id", genre.Id));
+            }
         }
 
-        public void AddBookAuthor(int bookId, int authorId)
+        public void Delete(int id)
         {
-            _databaseService.ExecuteNonQuery(
-                "INSERT OR IGNORE INTO BookAuthors (book_id, author_id) VALUES (@book_id, @auth_id);",
-                new SqliteParameter("@book_id", bookId),
-                new SqliteParameter("@auth_id", authorId)
-            );
+            _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
+                new SQLiteParameter("@book_id", id));
+            _db.ExecuteNonQuery("DELETE FROM books WHERE id = @id",
+                new SQLiteParameter("@id", id));
         }
 
-        public void UpdateBook(Book book)
+        // NOWA METODA – pobranie ksi¹¿ki po ISBN
+        public async Task<Book> GetBookByIsbnAsync(string isbn)
         {
-            string sql = @"
-UPDATE books
-SET title=@title, author_id=@auth_id, isbn=@isbn, genre_id=@genre_id,
-    pages=@pages, read_time=@read_time, book_series_id=@series_id, tome=@tome,
-    publisher_id=@publisher_id, image=@image, description=@description
-WHERE id=@id;
-";
-            _databaseService.ExecuteNonQuery(sql,
-                new SqliteParameter("@id", book.Id),
-                new SqliteParameter("@title", book.Title),
-                new SqliteParameter("@auth_id", book.AuthorId),
-                new SqliteParameter("@isbn", book.Isbn),
-                new SqliteParameter("@genre_id", book.GenreId),
-                new SqliteParameter("@pages", book.Pages),
-                new SqliteParameter("@read_time", book.ReadTime),
-                new SqliteParameter("@series_id", book.SeriesId ?? (object)DBNull.Value),
-                new SqliteParameter("@tome", book.Tome ?? (object)DBNull.Value),
-                new SqliteParameter("@publisher_id", book.PublisherId),
-                new SqliteParameter("@image", book.ImagePath ?? string.Empty),
-                new SqliteParameter("@description", book.Description ?? string.Empty)
-            );
+            string sql = "SELECT * FROM books WHERE isbn = @isbn LIMIT 1";
+            var dt = await _db.ExecuteQueryAsync(sql, new SQLiteParameter("@isbn", isbn));
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            return MapFromDataRow(dt.Rows[0]);
         }
 
-        public void DeleteBook(int bookId)
+        private Book MapFromDataRow(DataRow row)
         {
-            ClearBookAuthors(bookId);
-            _databaseService.ExecuteNonQuery(
-                "DELETE FROM books WHERE id=@id;",
-                new SqliteParameter("@id", bookId)
-            );
-        }
-
-        public void ClearBookAuthors(int bookId)
-        {
-            _databaseService.ExecuteNonQuery(
-                "DELETE FROM BookAuthors WHERE book_id=@book_id;",
-                new SqliteParameter("@book_id", bookId)
-            );
-        }
-
-        public Book? GetBookById(int id)
-        {
-            DataTable table = _databaseService.ExecuteQuery("SELECT * FROM books WHERE id=@id;",
-                new SqliteParameter("@id", id));
-            if (table.Rows.Count == 0) return null;
-
-            var row = table.Rows[0];
             return new Book
             {
                 Id = Convert.ToInt32(row["id"]),
-                Title = row["title"].ToString() ?? string.Empty,
-                Isbn = row["isbn"].ToString() ?? string.Empty,
-                Pages = row["pages"] != DBNull.Value ? Convert.ToInt32(row["pages"]) : 0,
-                ReadTime = row["read_time"] != DBNull.Value ? Convert.ToInt32(row["read_time"]) : 0,
-                Description = row["description"].ToString() ?? string.Empty,
-                ImagePath = row["image"].ToString() ?? string.Empty,
-                AuthorId = row["author_id"] != DBNull.Value ? Convert.ToInt32(row["author_id"]) : 0,
-                GenreId = row["genre_id"] != DBNull.Value ? Convert.ToInt32(row["genre_id"]) : 0,
-                PublisherId = row["publisher_id"] != DBNull.Value ? Convert.ToInt32(row["publisher_id"]) : 0,
-                SeriesId = row["book_series_id"] != DBNull.Value ? Convert.ToInt32(row["book_series_id"]) : null,
-                Tome = row["tome"] != DBNull.Value ? Convert.ToInt32(row["tome"]) : null
+                Title = row["title"].ToString(),
+                ISBN = row["isbn"].ToString(),
+                Publisher = row["publisher_id"] != DBNull.Value ? new Publisher { Id = Convert.ToInt32(row["publisher_id"]) } : null,
+                Series = row["series_id"] != DBNull.Value ? new BookSeries { Id = Convert.ToInt32(row["series_id"]) } : null,
+                SeriesNumber = row["series_number"] != DBNull.Value ? Convert.ToInt32(row["series_number"]) : 0,
+                EditionType = (EditionType)Convert.ToInt32(row["edition_type"]),
+                Notes = row["notes"].ToString()
             };
         }
     }

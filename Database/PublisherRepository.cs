@@ -5,61 +5,59 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Pagino_Teka.Database
+
+namespace Pagino_Teka.Repositories
 {
     public class PublisherRepository
     {
-        private readonly DatabaseService _databaseService;
+        private readonly DatabaseService _db;
 
-        public PublisherRepository(DatabaseService databaseService)
+        public PublisherRepository(DatabaseService db)
         {
-            _databaseService = databaseService;
+            _db = db;
         }
 
-        public List<Publisher> GetAllPublishers()
+        public IEnumerable<Publisher> GetAll()
         {
+            string sql = "SELECT * FROM publishers ORDER BY name";
+            var dt = _db.ExecuteQuery(sql);
             var list = new List<Publisher>();
-            DataTable table = _databaseService.ExecuteQuery("SELECT id, name FROM Publishers ORDER BY name;");
-            foreach (DataRow r in table.Rows)
+
+            foreach (DataRow row in dt.Rows)
             {
-                list.Add(new Publisher
-                {
-                    Id = Convert.ToInt32(r["id"]),
-                    Name = r["name"].ToString() ?? string.Empty
-                });
+                list.Add(MapFromDataRow(row));
             }
+
             return list;
         }
 
-        public Publisher? GetPublisherByName(string name)
+        // NOWA METODA – dodanie wydawcy jeśli nie istnieje
+        public Publisher AddIfNotExists(string name)
         {
-            DataTable table = _databaseService.ExecuteQuery(
-                "SELECT id, name FROM Publishers WHERE name = @name LIMIT 1;",
-                new SqliteParameter("@name", name)
-            );
+            var existing = GetByName(name);
+            if (existing != null) return existing;
 
-            if (table.Rows.Count == 0) return null;
+            string sql = "INSERT INTO publishers (name) VALUES (@name)";
+            _db.ExecuteNonQuery(sql, new SQLiteParameter("@name", name));
+            return GetByName(name);
+        }
 
-            var row = table.Rows[0];
+        public Publisher GetByName(string name)
+        {
+            string sql = "SELECT * FROM publishers WHERE name = @name LIMIT 1";
+            var dt = _db.ExecuteQuery(sql, new SQLiteParameter("@name", name));
+
+            if (dt.Rows.Count == 0) return null;
+            return MapFromDataRow(dt.Rows[0]);
+        }
+
+        private Publisher MapFromDataRow(DataRow row)
+        {
             return new Publisher
             {
                 Id = Convert.ToInt32(row["id"]),
-                Name = row["name"].ToString() ?? string.Empty
+                Name = row["name"].ToString()
             };
-        }
-
-        public int AddPublisherIfNotExists(string name)
-        {
-            var existing = GetPublisherByName(name);
-            if (existing != null) return existing.Id;
-
-            _databaseService.ExecuteNonQuery(
-                "INSERT INTO Publishers (name) VALUES (@name);",
-                new SqliteParameter("@name", name)
-            );
-
-            object idObj = _databaseService.ExecuteScalar("SELECT last_insert_rowid();");
-            return Convert.ToInt32(idObj);
         }
     }
 }
