@@ -3,130 +3,457 @@
     partial class AddBookForm
     {
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.TextBox textBox_BookTitle;
-        private System.Windows.Forms.TextBox textBox_Autorzy;
-        private System.Windows.Forms.TextBox textBox_Isbn;
-        private System.Windows.Forms.TextBox textBox_Pages;
-        private System.Windows.Forms.TextBox textBox_ReadTime;
-        private System.Windows.Forms.TextBox textBox_Tome;
         private System.Windows.Forms.RichTextBox text_BookNote;
         private System.Windows.Forms.CheckedListBox checkedListBox_Gatunki;
-        private System.Windows.Forms.ComboBox comboBox_Publisher;
-        private System.Windows.Forms.ComboBox comboBox_BookSeries;
-        private System.Windows.Forms.Button button_AddPublisher;
-        private System.Windows.Forms.Button button_ZapiszKsiążkę;
-        private System.Windows.Forms.Button button_ZapiszKolejna;
-        private System.Windows.Forms.Button button_PobierzISBN;
-        private System.Windows.Forms.Button button_WybierzZDysku;
-        private System.Windows.Forms.Button button_Anuluj;
+        private System.Windows.Forms.Button button_AddPublisher, button_ZapiszKsiążkę, button_ZapiszKolejna, button_PobierzISBN, button_WybierzZDysku, button_Anuluj;
         private System.Windows.Forms.PictureBox pictureBox_Okladka;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.RadioButton radioButton_Książka;
-        private System.Windows.Forms.RadioButton radioButton_Ebook;
-        private System.Windows.Forms.RadioButton radioButton_Audiobook;
-        private System.Windows.Forms.RadioButton radioButton_NaPodFil;
-        private System.Windows.Forms.RadioButton radioButton_NaPodGry;
-        private System.Windows.Forms.Label label_Title;
-        private System.Windows.Forms.Label label_Authors;
-        private System.Windows.Forms.Label label_ISBN;
-        private System.Windows.Forms.Label label_Pages;
-        private System.Windows.Forms.Label label_ReadTime;
-        private System.Windows.Forms.Label label_Tome;
-        private System.Windows.Forms.Label label_Publisher;
-        private System.Windows.Forms.Label label_Series;
-        private System.Windows.Forms.Label label_Genres;
-        private System.Windows.Forms.Label label_Cover;
-        private System.Windows.Forms.Label label_Notes;
-        private System.Windows.Forms.GroupBox groupBox_PublicationType;
-        private System.Windows.Forms.GroupBox groupBox_AdaptationType;
+        private System.Windows.Forms.RadioButton radioButton_Książka, radioButton_Ebook, radioButton_Audiobook;
+        private System.Windows.Forms.RadioButton radioButton_NaPodFil, radioButton_NaPodGry;
+        private System.Windows.Forms.GroupBox groupBox_PublicationType, groupBox_AdaptationType;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-                components.Dispose();
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-
-            // TextBoxes
-            this.textBox_BookTitle = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(120, 20), Size = new System.Drawing.Size(400, 22), Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            this.textBox_Autorzy = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(120, 60), Size = new System.Drawing.Size(400, 22), Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            this.textBox_Isbn = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(120, 100), Size = new System.Drawing.Size(250, 22), Anchor = AnchorStyles.Top | AnchorStyles.Left };
-            this.textBox_Pages = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(120, 140), Size = new System.Drawing.Size(100, 22) };
-            this.textBox_ReadTime = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(320, 140), Size = new System.Drawing.Size(100, 22) };
-            this.textBox_Tome = new System.Windows.Forms.TextBox() { Location = new System.Drawing.Point(120, 180), Size = new System.Drawing.Size(100, 22) };
-
-            // RichTextBox for Notes
-            this.text_BookNote = new System.Windows.Forms.RichTextBox() { Location = new System.Drawing.Point(120, 400), Size = new System.Drawing.Size(400, 120), Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-
-            // CheckedListBox for Genres
-            this.checkedListBox_Gatunki = new System.Windows.Forms.CheckedListBox() { Location = new System.Drawing.Point(120, 220), Size = new System.Drawing.Size(400, 150), Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-
-            // ComboBoxes
-            this.comboBox_Publisher = new System.Windows.Forms.ComboBox() { Location = new System.Drawing.Point(120, 330), Size = new System.Drawing.Size(250, 22) };
-            this.comboBox_BookSeries = new System.Windows.Forms.ComboBox() { Location = new System.Drawing.Point(120, 360), Size = new System.Drawing.Size(250, 22) };
-
-            // Buttons
-            this.button_AddPublisher = new System.Windows.Forms.Button() { Text = "Dodaj wydawcę", Location = new System.Drawing.Point(380, 330), Size = new System.Drawing.Size(140, 25) };
-            this.button_PobierzISBN = new System.Windows.Forms.Button() { Text = "Pobierz po ISBN", Location = new System.Drawing.Point(380, 100), Size = new System.Drawing.Size(140, 25) };
-            this.button_WybierzZDysku = new System.Windows.Forms.Button() { Text = "Wybierz z dysku", Location = new System.Drawing.Point(650, 330), Size = new System.Drawing.Size(140, 25) };
-            this.button_ZapiszKsiążkę = new System.Windows.Forms.Button() { Text = "Zapisz", Location = new System.Drawing.Point(600, 540), Size = new System.Drawing.Size(100, 30), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            this.button_ZapiszKolejna = new System.Windows.Forms.Button() { Text = "Zapisz i dodaj kolejną", Location = new System.Drawing.Point(710, 540), Size = new System.Drawing.Size(150, 30), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            this.button_Anuluj = new System.Windows.Forms.Button() { Text = "Anuluj", Location = new System.Drawing.Point(870, 540), Size = new System.Drawing.Size(100, 30), Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-
-            // PictureBox
-            this.pictureBox_Okladka = new System.Windows.Forms.PictureBox() { Location = new System.Drawing.Point(650, 20), Size = new System.Drawing.Size(320, 300), SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom, BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle, Anchor = AnchorStyles.Top | AnchorStyles.Right };
-
-            // RadioButtons
-            this.radioButton_Książka = new System.Windows.Forms.RadioButton() { Text = "Książka", Location = new System.Drawing.Point(10, 20) };
-            this.radioButton_Ebook = new System.Windows.Forms.RadioButton() { Text = "E-book", Location = new System.Drawing.Point(100, 20) };
-            this.radioButton_Audiobook = new System.Windows.Forms.RadioButton() { Text = "Audiobook", Location = new System.Drawing.Point(200, 20) };
-
-            this.radioButton_NaPodFil = new System.Windows.Forms.RadioButton() { Text = "Na podstawie filmu", Location = new System.Drawing.Point(10, 20) };
-            this.radioButton_NaPodGry = new System.Windows.Forms.RadioButton() { Text = "Na podstawie gry", Location = new System.Drawing.Point(160, 20) };
-
-            // GroupBoxes
-            this.groupBox_PublicationType = new System.Windows.Forms.GroupBox() { Text = "Rodzaj wydania", Location = new System.Drawing.Point(120, 220), Size = new System.Drawing.Size(320, 50) };
-            this.groupBox_PublicationType.Controls.Add(this.radioButton_Książka);
-            this.groupBox_PublicationType.Controls.Add(this.radioButton_Ebook);
-            this.groupBox_PublicationType.Controls.Add(this.radioButton_Audiobook);
-
-            this.groupBox_AdaptationType = new System.Windows.Forms.GroupBox() { Text = "Adaptacja", Location = new System.Drawing.Point(120, 280), Size = new System.Drawing.Size(320, 50) };
-            this.groupBox_AdaptationType.Controls.Add(this.radioButton_NaPodFil);
-            this.groupBox_AdaptationType.Controls.Add(this.radioButton_NaPodGry);
-
-            // Labels
-            this.label_Title = new System.Windows.Forms.Label() { Text = "Tytuł:", Location = new System.Drawing.Point(20, 20), AutoSize = true };
-            this.label_Authors = new System.Windows.Forms.Label() { Text = "Autorzy:", Location = new System.Drawing.Point(20, 60), AutoSize = true };
-            this.label_ISBN = new System.Windows.Forms.Label() { Text = "ISBN:", Location = new System.Drawing.Point(20, 100), AutoSize = true };
-            this.label_Pages = new System.Windows.Forms.Label() { Text = "Liczba stron:", Location = new System.Drawing.Point(20, 140), AutoSize = true };
-            this.label_ReadTime = new System.Windows.Forms.Label() { Text = "Czas czytania:", Location = new System.Drawing.Point(240, 140), AutoSize = true };
-            this.label_Tome = new System.Windows.Forms.Label() { Text = "Tom:", Location = new System.Drawing.Point(20, 180), AutoSize = true };
-            this.label_Publisher = new System.Windows.Forms.Label() { Text = "Wydawca:", Location = new System.Drawing.Point(20, 330), AutoSize = true };
-            this.label_Series = new System.Windows.Forms.Label() { Text = "Seria:", Location = new System.Drawing.Point(20, 360), AutoSize = true };
-            this.label_Genres = new System.Windows.Forms.Label() { Text = "Gatunki:", Location = new System.Drawing.Point(20, 220), AutoSize = true };
-            this.label_Cover = new System.Windows.Forms.Label() { Text = "Okładka:", Location = new System.Drawing.Point(650, 0), AutoSize = true };
-            this.label_Notes = new System.Windows.Forms.Label() { Text = "Notatki:", Location = new System.Drawing.Point(20, 400), AutoSize = true };
-
-            // Form properties
-            this.Text = "Dodaj książkę";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.ClientSize = new System.Drawing.Size(1000, 600);
-            this.MinimumSize = new System.Drawing.Size(1000, 600);
-            this.AutoScroll = true;
-
-            // Add controls to form
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                textBox_BookTitle, textBox_Autorzy, textBox_Isbn, textBox_Pages, textBox_ReadTime, textBox_Tome,
-                text_BookNote, checkedListBox_Gatunki, comboBox_Publisher, comboBox_BookSeries, button_AddPublisher,
-                button_PobierzISBN, button_WybierzZDysku, button_ZapiszKsiążkę, button_ZapiszKolejna, button_Anuluj,
-                pictureBox_Okladka, groupBox_PublicationType, groupBox_AdaptationType,
-                label_Title, label_Authors, label_ISBN, label_Pages, label_ReadTime, label_Tome,
-                label_Publisher, label_Series, label_Genres, label_Cover, label_Notes
-            });
+            tableLayoutPanel1 = new TableLayoutPanel();
+            this.label_Title = new Label();
+            this.textBox_BookTitle = new TextBox();
+            this.label_Authors = new Label();
+            this.textBox_Autorzy = new TextBox();
+            this.label_ISBN = new Label();
+            this.textBox_Isbn = new TextBox();
+            button_PobierzISBN = new Button();
+            this.label_Genres = new Label();
+            checkedListBox_Gatunki = new CheckedListBox();
+            this.label_Publisher = new Label();
+            this.comboBox_Publisher = new ComboBox();
+            button_AddPublisher = new Button();
+            groupBox_PublicationType = new GroupBox();
+            radioButton_Książka = new RadioButton();
+            radioButton_Ebook = new RadioButton();
+            radioButton_Audiobook = new RadioButton();
+            groupBox_AdaptationType = new GroupBox();
+            radioButton_NaPodFil = new RadioButton();
+            radioButton_NaPodGry = new RadioButton();
+            this.label_Notes = new Label();
+            text_BookNote = new RichTextBox();
+            this.label_Cover = new Label();
+            pictureBox_Okladka = new PictureBox();
+            button_WybierzZDysku = new Button();
+            button_ZapiszKsiążkę = new Button();
+            button_ZapiszKolejna = new Button();
+            button_Anuluj = new Button();
+            groupBox1 = new GroupBox();
+            comboBox_BookSeries = new ComboBox();
+            label_Series = new Label();
+            textBox_Tome = new TextBox();
+            label_Tome = new Label();
+            textBox_Pages = new TextBox();
+            label_Pages = new Label();
+            textBox_ReadTime = new TextBox();
+            label_ReadTime = new Label();
+            tableLayoutPanel1.SuspendLayout();
+            groupBox_PublicationType.SuspendLayout();
+            groupBox_AdaptationType.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox_Okladka).BeginInit();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.AutoSize = true;
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(groupBox1, 1, 2);
+            tableLayoutPanel1.Controls.Add(this.textBox_BookTitle, 1, 0);
+            tableLayoutPanel1.Controls.Add(this.label_Authors, 0, 1);
+            tableLayoutPanel1.Controls.Add(this.textBox_Autorzy, 1, 1);
+            tableLayoutPanel1.Controls.Add(this.label_ISBN, 0, 2);
+            tableLayoutPanel1.Controls.Add(groupBox_PublicationType, 1, 17);
+            tableLayoutPanel1.Controls.Add(label_Tome, 0, 13);
+            tableLayoutPanel1.Controls.Add(textBox_Tome, 1, 13);
+            tableLayoutPanel1.Controls.Add(this.label_Genres, 0, 7);
+            tableLayoutPanel1.Controls.Add(this.comboBox_Publisher, 1, 18);
+            tableLayoutPanel1.Controls.Add(this.label_Publisher, 0, 18);
+            tableLayoutPanel1.Controls.Add(checkedListBox_Gatunki, 1, 7);
+            tableLayoutPanel1.Controls.Add(label_Series, 0, 10);
+            tableLayoutPanel1.Controls.Add(comboBox_BookSeries, 1, 10);
+            tableLayoutPanel1.Controls.Add(this.label_Title, 0, 0);
+            tableLayoutPanel1.Controls.Add(label_Pages, 0, 14);
+            tableLayoutPanel1.Controls.Add(textBox_Pages, 1, 14);
+            tableLayoutPanel1.Controls.Add(textBox_ReadTime, 1, 15);
+            tableLayoutPanel1.Controls.Add(label_ReadTime, 0, 15);
+            tableLayoutPanel1.Controls.Add(groupBox_AdaptationType, 1, 16);
+            tableLayoutPanel1.Location = new Point(12, 12);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 19;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new Size(388, 521);
+            tableLayoutPanel1.TabIndex = 0;
+            // 
+            // label_Title
+            // 
+            this.label_Title.Anchor = AnchorStyles.Left;
+            this.label_Title.BackColor = SystemColors.Control;
+            this.label_Title.Font = new Font("Segoe UI", 9F);
+            this.label_Title.Location = new Point(3, 4);
+            this.label_Title.Name = "label_Title";
+            this.label_Title.Size = new Size(62, 20);
+            this.label_Title.TabIndex = 0;
+            this.label_Title.Text = "Tytuł:";
+            this.label_Title.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_BookTitle
+            // 
+            this.textBox_BookTitle.Location = new Point(123, 3);
+            this.textBox_BookTitle.Name = "textBox_BookTitle";
+            this.textBox_BookTitle.Size = new Size(259, 23);
+            this.textBox_BookTitle.TabIndex = 1;
+            // 
+            // label_Authors
+            // 
+            this.label_Authors.Anchor = AnchorStyles.Left;
+            this.label_Authors.Location = new Point(3, 33);
+            this.label_Authors.Name = "label_Authors";
+            this.label_Authors.Size = new Size(100, 20);
+            this.label_Authors.TabIndex = 2;
+            this.label_Authors.Text = "Autorzy :";
+            this.label_Authors.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Autorzy
+            // 
+            this.textBox_Autorzy.Location = new Point(123, 32);
+            this.textBox_Autorzy.Name = "textBox_Autorzy";
+            this.textBox_Autorzy.Size = new Size(259, 23);
+            this.textBox_Autorzy.TabIndex = 3;
+            // 
+            // label_ISBN
+            // 
+            this.label_ISBN.Anchor = AnchorStyles.Left;
+            this.label_ISBN.Location = new Point(3, 62);
+            this.label_ISBN.Name = "label_ISBN";
+            this.label_ISBN.Size = new Size(100, 20);
+            this.label_ISBN.TabIndex = 4;
+            this.label_ISBN.Text = "Numer ISBN:";
+            this.label_ISBN.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Isbn
+            // 
+            this.textBox_Isbn.Location = new Point(0, 0);
+            this.textBox_Isbn.Name = "textBox_Isbn";
+            this.textBox_Isbn.Size = new Size(155, 23);
+            this.textBox_Isbn.TabIndex = 5;
+            // 
+            // button_PobierzISBN
+            // 
+            button_PobierzISBN.Location = new Point(161, 0);
+            button_PobierzISBN.Name = "button_PobierzISBN";
+            button_PobierzISBN.Size = new Size(98, 23);
+            button_PobierzISBN.TabIndex = 6;
+            button_PobierzISBN.Text = "Pobierz z sieci";
+            // 
+            // label_Genres
+            // 
+            this.label_Genres.Anchor = AnchorStyles.Left;
+            this.label_Genres.Location = new Point(3, 126);
+            this.label_Genres.Name = "label_Genres";
+            this.label_Genres.Size = new Size(100, 23);
+            this.label_Genres.TabIndex = 13;
+            this.label_Genres.Text = "Gatunek:";
+            // 
+            // checkedListBox_Gatunki
+            // 
+            checkedListBox_Gatunki.Location = new Point(123, 90);
+            checkedListBox_Gatunki.Name = "checkedListBox_Gatunki";
+            checkedListBox_Gatunki.Size = new Size(259, 94);
+            checkedListBox_Gatunki.TabIndex = 14;
+            // 
+            // label_Publisher
+            // 
+            this.label_Publisher.Anchor = AnchorStyles.Left;
+            this.label_Publisher.Location = new Point(3, 495);
+            this.label_Publisher.Name = "label_Publisher";
+            this.label_Publisher.Size = new Size(100, 20);
+            this.label_Publisher.TabIndex = 15;
+            this.label_Publisher.Text = "Wydawca";
+            this.label_Publisher.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // comboBox_Publisher
+            // 
+            this.comboBox_Publisher.Location = new Point(123, 492);
+            this.comboBox_Publisher.Name = "comboBox_Publisher";
+            this.comboBox_Publisher.Size = new Size(259, 23);
+            this.comboBox_Publisher.TabIndex = 16;
+            // 
+            // button_AddPublisher
+            // 
+            button_AddPublisher.Location = new Point(571, 240);
+            button_AddPublisher.Name = "button_AddPublisher";
+            button_AddPublisher.Size = new Size(75, 23);
+            button_AddPublisher.TabIndex = 17;
+            // 
+            // groupBox_PublicationType
+            // 
+            groupBox_PublicationType.Controls.Add(radioButton_Książka);
+            groupBox_PublicationType.Controls.Add(radioButton_Ebook);
+            groupBox_PublicationType.Controls.Add(radioButton_Audiobook);
+            groupBox_PublicationType.Location = new Point(123, 386);
+            groupBox_PublicationType.Name = "groupBox_PublicationType";
+            groupBox_PublicationType.Size = new Size(200, 100);
+            groupBox_PublicationType.TabIndex = 20;
+            groupBox_PublicationType.TabStop = false;
+            groupBox_PublicationType.Text = "Wybierz jedną z opcji:";
+            // 
+            // radioButton_Książka
+            // 
+            radioButton_Książka.Location = new Point(6, 70);
+            radioButton_Książka.Name = "radioButton_Książka";
+            radioButton_Książka.Size = new Size(133, 24);
+            radioButton_Książka.TabIndex = 0;
+            radioButton_Książka.Text = "Książka drukowana";
+            // 
+            // radioButton_Ebook
+            // 
+            radioButton_Ebook.Location = new Point(6, 44);
+            radioButton_Ebook.Name = "radioButton_Ebook";
+            radioButton_Ebook.Size = new Size(104, 24);
+            radioButton_Ebook.TabIndex = 1;
+            radioButton_Ebook.Text = "Ebook";
+            // 
+            // radioButton_Audiobook
+            // 
+            radioButton_Audiobook.Location = new Point(6, 22);
+            radioButton_Audiobook.Name = "radioButton_Audiobook";
+            radioButton_Audiobook.Size = new Size(104, 24);
+            radioButton_Audiobook.TabIndex = 2;
+            radioButton_Audiobook.Text = "Audiobook";
+            // 
+            // groupBox_AdaptationType
+            // 
+            groupBox_AdaptationType.Controls.Add(radioButton_NaPodFil);
+            groupBox_AdaptationType.Controls.Add(radioButton_NaPodGry);
+            groupBox_AdaptationType.Location = new Point(123, 308);
+            groupBox_AdaptationType.Name = "groupBox_AdaptationType";
+            groupBox_AdaptationType.Size = new Size(200, 72);
+            groupBox_AdaptationType.TabIndex = 21;
+            groupBox_AdaptationType.TabStop = false;
+            groupBox_AdaptationType.Text = "Wybierz jedną z opcji";
+            // 
+            // radioButton_NaPodFil
+            // 
+            radioButton_NaPodFil.Location = new Point(6, 43);
+            radioButton_NaPodFil.Name = "radioButton_NaPodFil";
+            radioButton_NaPodFil.Size = new Size(141, 24);
+            radioButton_NaPodFil.TabIndex = 0;
+            radioButton_NaPodFil.Text = "Na podstawie filmu";
+            // 
+            // radioButton_NaPodGry
+            // 
+            radioButton_NaPodGry.Location = new Point(6, 22);
+            radioButton_NaPodGry.Name = "radioButton_NaPodGry";
+            radioButton_NaPodGry.Size = new Size(133, 24);
+            radioButton_NaPodGry.TabIndex = 1;
+            radioButton_NaPodGry.Text = "Na podstawie gry";
+            // 
+            // label_Notes
+            // 
+            this.label_Notes.Location = new Point(746, 656);
+            this.label_Notes.Name = "label_Notes";
+            this.label_Notes.Size = new Size(100, 23);
+            this.label_Notes.TabIndex = 22;
+            this.label_Notes.Text = "Opis książki:";
+            // 
+            // text_BookNote
+            // 
+            text_BookNote.Location = new Point(814, 616);
+            text_BookNote.Name = "text_BookNote";
+            text_BookNote.Size = new Size(100, 96);
+            text_BookNote.TabIndex = 23;
+            text_BookNote.Text = "";
+            // 
+            // label_Cover
+            // 
+            this.label_Cover.Location = new Point(650, 0);
+            this.label_Cover.Name = "label_Cover";
+            this.label_Cover.Size = new Size(100, 23);
+            this.label_Cover.TabIndex = 6;
+            // 
+            // pictureBox_Okladka
+            // 
+            pictureBox_Okladka.Location = new Point(746, 17);
+            pictureBox_Okladka.Name = "pictureBox_Okladka";
+            pictureBox_Okladka.Size = new Size(100, 50);
+            pictureBox_Okladka.TabIndex = 1;
+            pictureBox_Okladka.TabStop = false;
+            // 
+            // button_WybierzZDysku
+            // 
+            button_WybierzZDysku.Location = new Point(650, 330);
+            button_WybierzZDysku.Name = "button_WybierzZDysku";
+            button_WybierzZDysku.Size = new Size(75, 23);
+            button_WybierzZDysku.TabIndex = 2;
+            // 
+            // button_ZapiszKsiążkę
+            // 
+            button_ZapiszKsiążkę.Location = new Point(650, 540);
+            button_ZapiszKsiążkę.Name = "button_ZapiszKsiążkę";
+            button_ZapiszKsiążkę.Size = new Size(75, 23);
+            button_ZapiszKsiążkę.TabIndex = 3;
+            // 
+            // button_ZapiszKolejna
+            // 
+            button_ZapiszKolejna.Location = new Point(760, 540);
+            button_ZapiszKolejna.Name = "button_ZapiszKolejna";
+            button_ZapiszKolejna.Size = new Size(75, 23);
+            button_ZapiszKolejna.TabIndex = 4;
+            // 
+            // button_Anuluj
+            // 
+            button_Anuluj.Location = new Point(920, 540);
+            button_Anuluj.Name = "button_Anuluj";
+            button_Anuluj.Size = new Size(75, 23);
+            button_Anuluj.TabIndex = 5;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(this.textBox_Isbn);
+            groupBox1.Controls.Add(button_PobierzISBN);
+            groupBox1.Location = new Point(123, 61);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(259, 23);
+            groupBox1.TabIndex = 7;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "groupBox1";
+            // 
+            // comboBox_BookSeries
+            // 
+            comboBox_BookSeries.Location = new Point(123, 192);
+            comboBox_BookSeries.Name = "comboBox_BookSeries";
+            comboBox_BookSeries.Size = new Size(259, 23);
+            comboBox_BookSeries.TabIndex = 19;
+            // 
+            // label_Series
+            // 
+            label_Series.Anchor = AnchorStyles.Left;
+            label_Series.Location = new Point(3, 192);
+            label_Series.Name = "label_Series";
+            label_Series.Size = new Size(100, 23);
+            label_Series.TabIndex = 18;
+            label_Series.Text = "Tytuł serii:";
+            label_Series.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Tome
+            // 
+            textBox_Tome.Location = new Point(123, 221);
+            textBox_Tome.Name = "textBox_Tome";
+            textBox_Tome.Size = new Size(100, 23);
+            textBox_Tome.TabIndex = 12;
+            // 
+            // label_Tome
+            // 
+            label_Tome.Anchor = AnchorStyles.Left;
+            label_Tome.Location = new Point(3, 221);
+            label_Tome.Name = "label_Tome";
+            label_Tome.Size = new Size(100, 23);
+            label_Tome.TabIndex = 11;
+            label_Tome.Text = "Numer w serii:";
+            label_Tome.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_Pages
+            // 
+            textBox_Pages.Location = new Point(123, 250);
+            textBox_Pages.Name = "textBox_Pages";
+            textBox_Pages.Size = new Size(100, 23);
+            textBox_Pages.TabIndex = 8;
+            // 
+            // label_Pages
+            // 
+            label_Pages.Anchor = AnchorStyles.Left;
+            label_Pages.Location = new Point(3, 250);
+            label_Pages.Name = "label_Pages";
+            label_Pages.Size = new Size(100, 23);
+            label_Pages.TabIndex = 7;
+            label_Pages.Text = "Ilość stron:";
+            label_Pages.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // textBox_ReadTime
+            // 
+            textBox_ReadTime.Location = new Point(123, 279);
+            textBox_ReadTime.Name = "textBox_ReadTime";
+            textBox_ReadTime.Size = new Size(100, 23);
+            textBox_ReadTime.TabIndex = 10;
+            // 
+            // label_ReadTime
+            // 
+            label_ReadTime.Anchor = AnchorStyles.Left;
+            label_ReadTime.Location = new Point(3, 279);
+            label_ReadTime.Name = "label_ReadTime";
+            label_ReadTime.Size = new Size(100, 23);
+            label_ReadTime.TabIndex = 9;
+            label_ReadTime.Text = "Czas czytania:";
+            label_ReadTime.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // AddBookForm
+            // 
+            ClientSize = new Size(1023, 737);
+            Controls.Add(tableLayoutPanel1);
+            Controls.Add(pictureBox_Okladka);
+            Controls.Add(button_WybierzZDysku);
+            Controls.Add(button_ZapiszKsiążkę);
+            Controls.Add(button_ZapiszKolejna);
+            Controls.Add(button_Anuluj);
+            Controls.Add(this.label_Notes);
+            Controls.Add(text_BookNote);
+            Controls.Add(this.label_Cover);
+            Controls.Add(button_AddPublisher);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "AddBookForm";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Dodaj książkę";
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            groupBox_PublicationType.ResumeLayout(false);
+            groupBox_AdaptationType.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox_Okladka).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
+        private GroupBox groupBox1;
+        private Label label_Tome;
+        private TextBox textBox_Tome;
+        private Label label_Series;
+        private ComboBox comboBox_BookSeries;
+        private Label label_Pages;
+        private TextBox textBox_Pages;
+        private TextBox textBox_ReadTime;
+        private Label label_ReadTime;
     }
 }

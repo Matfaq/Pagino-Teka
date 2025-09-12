@@ -38,14 +38,14 @@ namespace Pagino_Teka.Repositories
             if (existing != null) return existing;
 
             string sql = "INSERT INTO publishers (name) VALUES (@name)";
-            _db.ExecuteNonQuery(sql, new SQLiteParameter("@name", name));
+            _db.ExecuteNonQuery(sql, new SqliteParameter("@name", name));
             return GetByName(name);
         }
 
         public Publisher GetByName(string name)
         {
             string sql = "SELECT * FROM publishers WHERE name = @name LIMIT 1";
-            var dt = _db.ExecuteQuery(sql, new SQLiteParameter("@name", name));
+            var dt = _db.ExecuteQuery(sql, new SqliteParameter("@name", name));
 
             if (dt.Rows.Count == 0) return null;
             return MapFromDataRow(dt.Rows[0]);

@@ -13,7 +13,6 @@ namespace Pagino_Teka.Services
         public AuthorRepository AuthorRepository { get; }
         public PublisherRepository PublisherRepository { get; }
         public BookSeriesRepository BookSeriesRepository { get; }
-        public GenreRepository GenreRepository { get; }
 
         public BookService(DatabaseService databaseService)
         {
@@ -24,7 +23,6 @@ namespace Pagino_Teka.Services
             AuthorRepository = new AuthorRepository(databaseService);
             PublisherRepository = new PublisherRepository(databaseService);
             BookSeriesRepository = new BookSeriesRepository(databaseService);
-            GenreRepository = new GenreRepository(databaseService);
         }
 
         // --- GET methods ---
@@ -39,9 +37,10 @@ namespace Pagino_Teka.Services
             return BookSeriesRepository.GetAll();
         }
 
+        // Ładowanie gatunków jest obsługiwane w BookRepository (a nie przez osobny repozytorium)
         public IEnumerable<Genre> GetAllGenres()
         {
-            return GenreRepository.GetAll();
+            return BookRepository.GetAllGenres();
         }
 
         public async Task<Book> GetBookByIsbnAsync(string isbn)

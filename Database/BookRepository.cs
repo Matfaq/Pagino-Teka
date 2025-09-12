@@ -14,84 +14,97 @@ namespace Pagino_Teka.Repositories
 
         public BookRepository(DatabaseService db)
         {
-            _db = db;
+            _db = db ?? throw new ArgumentNullException(nameof(db));
         }
+
+        // --- ADD ---
 
         public void Add(Book book)
         {
-            string sql = @"INSERT INTO books (title, isbn, publisher_id, series_id, series_number, edition_type, notes)
-                           VALUES (@title, @isbn, @publisher_id, @series_id, @series_number, @edition_type, @notes);
+            string sql = @"INSERT INTO books (title, isbn, publisher_id, series_id, series_number, tome, year, notes)
+                           VALUES (@title, @isbn, @publisher_id, @series_id, @series_number, @tome, @year, @notes);
                            SELECT last_insert_rowid();";
 
             var id = Convert.ToInt32(_db.ExecuteScalar(sql,
-                new SQLiteParameter("@title", book.Title),
-                new SQLiteParameter("@isbn", book.ISBN),
-                new SQLiteParameter("@publisher_id", book.Publisher?.Id),
-                new SQLiteParameter("@series_id", book.Series?.Id),
-                new SQLiteParameter("@series_number", book.SeriesNumber),
-                new SQLiteParameter("@edition_type", (int)book.EditionType),
-                new SQLiteParameter("@notes", book.Notes ?? string.Empty)
+                new SqliteParameter("@title", book.Title),
+                new SqliteParameter("@isbn", book.Isbn),
+                new SqliteParameter("@publisher_id", book.PublisherId > 0 ? (object)book.PublisherId : DBNull.Value),
+                new SqliteParameter("@series_id", book.SeriesId > 0 ? (object)book.SeriesId : DBNull.Value),
+                new SqliteParameter("@series_number", book.SeriesNumber ?? (object)DBNull.Value),
+                new SqliteParameter("@tome", book.Tome ?? (object)DBNull.Value),
+                new SqliteParameter("@year", book.Year ?? (object)DBNull.Value),
+                new SqliteParameter("@notes", book.Description ?? string.Empty)
             ));
 
             book.Id = id;
 
-            // Zapis gatunków
-            foreach (var genre in book.Genres)
+            // gatunki
+            foreach (var genreId in new[] { book.GenreId })
             {
-                _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
-                    new SQLiteParameter("@book_id", id),
-                    new SQLiteParameter("@genre_id", genre.Id));
+                if (genreId > 0)
+                {
+                    _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
+                        new SqliteParameter("@book_id", id),
+                        new SqliteParameter("@genre_id", genreId));
+                }
             }
         }
 
+        // --- UPDATE ---
+
         public void Update(Book book)
         {
-            string sql = @"UPDATE books SET 
+            string sql = @"UPDATE books SET
                            title = @title,
                            isbn = @isbn,
                            publisher_id = @publisher_id,
                            series_id = @series_id,
                            series_number = @series_number,
-                           edition_type = @edition_type,
+                           tome = @tome,
+                           year = @year,
                            notes = @notes
                            WHERE id = @id";
 
             _db.ExecuteNonQuery(sql,
-                new SQLiteParameter("@title", book.Title),
-                new SQLiteParameter("@isbn", book.ISBN),
-                new SQLiteParameter("@publisher_id", book.Publisher?.Id),
-                new SQLiteParameter("@series_id", book.Series?.Id),
-                new SQLiteParameter("@series_number", book.SeriesNumber),
-                new SQLiteParameter("@edition_type", (int)book.EditionType),
-                new SQLiteParameter("@notes", book.Notes ?? string.Empty),
-                new SQLiteParameter("@id", book.Id)
+                new SqliteParameter("@title", book.Title),
+                new SqliteParameter("@isbn", book.Isbn),
+                new SqliteParameter("@publisher_id", book.PublisherId > 0 ? (object)book.PublisherId : DBNull.Value),
+                new SqliteParameter("@series_id", book.SeriesId > 0 ? (object)book.SeriesId : DBNull.Value),
+                new SqliteParameter("@series_number", book.SeriesNumber ?? (object)DBNull.Value),
+                new SqliteParameter("@tome", book.Tome ?? (object)DBNull.Value),
+                new SqliteParameter("@year", book.Year ?? (object)DBNull.Value),
+                new SqliteParameter("@notes", book.Description ?? string.Empty),
+                new SqliteParameter("@id", book.Id)
             );
 
-            // Aktualizacja gatunków
+            // gatunki
             _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
-                new SQLiteParameter("@book_id", book.Id));
+                new SqliteParameter("@book_id", book.Id));
 
-            foreach (var genre in book.Genres)
+            if (book.GenreId > 0)
             {
                 _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
-                    new SQLiteParameter("@book_id", book.Id),
-                    new SQLiteParameter("@genre_id", genre.Id));
+                    new SqliteParameter("@book_id", book.Id),
+                    new SqliteParameter("@genre_id", book.GenreId));
             }
         }
+
+        // --- DELETE ---
 
         public void Delete(int id)
         {
             _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
-                new SQLiteParameter("@book_id", id));
+                new SqliteParameter("@book_id", id));
             _db.ExecuteNonQuery("DELETE FROM books WHERE id = @id",
-                new SQLiteParameter("@id", id));
+                new SqliteParameter("@id", id));
         }
 
-        // NOWA METODA – pobranie ksi¹¿ki po ISBN
+        // --- GET BY ISBN ---
+
         public async Task<Book> GetBookByIsbnAsync(string isbn)
         {
             string sql = "SELECT * FROM books WHERE isbn = @isbn LIMIT 1";
-            var dt = await _db.ExecuteQueryAsync(sql, new SQLiteParameter("@isbn", isbn));
+            var dt = await _db.ExecuteQueryAsync(sql, new SqliteParameter("@isbn", isbn));
 
             if (dt.Rows.Count == 0)
                 return null;
@@ -99,18 +112,41 @@ namespace Pagino_Teka.Repositories
             return MapFromDataRow(dt.Rows[0]);
         }
 
+        // --- GENRES ---
+
+        public IEnumerable<Genre> GetAllGenres()
+        {
+            var list = new List<Genre>();
+            string sql = "SELECT id, name FROM genres ORDER BY name";
+            var dt = _db.ExecuteQuery(sql);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new Genre
+                {
+                    Id = Convert.ToInt32(row["id"]),
+                    Name = row["name"].ToString()
+                });
+            }
+
+            return list;
+        }
+
+        // --- MAPPER ---
+
         private Book MapFromDataRow(DataRow row)
         {
             return new Book
             {
                 Id = Convert.ToInt32(row["id"]),
                 Title = row["title"].ToString(),
-                ISBN = row["isbn"].ToString(),
-                Publisher = row["publisher_id"] != DBNull.Value ? new Publisher { Id = Convert.ToInt32(row["publisher_id"]) } : null,
-                Series = row["series_id"] != DBNull.Value ? new BookSeries { Id = Convert.ToInt32(row["series_id"]) } : null,
-                SeriesNumber = row["series_number"] != DBNull.Value ? Convert.ToInt32(row["series_number"]) : 0,
-                EditionType = (EditionType)Convert.ToInt32(row["edition_type"]),
-                Notes = row["notes"].ToString()
+                Isbn = row["isbn"].ToString(),
+                PublisherId = row["publisher_id"] != DBNull.Value ? Convert.ToInt32(row["publisher_id"]) : 0,
+                SeriesId = row["series_id"] != DBNull.Value ? Convert.ToInt32(row["series_id"]) : 0,
+                SeriesNumber = row["series_number"] != DBNull.Value ? Convert.ToInt32(row["series_number"]) : (int?)null,
+                Tome = row["tome"] != DBNull.Value ? Convert.ToInt32(row["tome"]) : (int?)null,
+                Year = row["year"] != DBNull.Value ? Convert.ToInt32(row["year"]) : (int?)null,
+                Description = row["notes"]?.ToString() ?? string.Empty
             };
         }
     }
