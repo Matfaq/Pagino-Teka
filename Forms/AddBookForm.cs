@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Pagino_Teka.Models;
+using Pagino_Teka.Repositories;
+using Pagino_Teka.Database;
 using Pagino_Teka.Services;
 using Pagino_Teka.Theme;
 
@@ -307,5 +309,7 @@ namespace Pagino_Teka
 
         private void ComboBox_Publisher_SelectedIndexChanged(object sender, EventArgs e) { }
         private void ComboBox_BookSeries_SelectedIndexChanged(object sender, EventArgs e) { }
+
+        
     }
 }
