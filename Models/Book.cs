@@ -1,36 +1,33 @@
-﻿namespace Pagino_Teka.Models
+﻿using System.Collections.Generic;
+
+namespace Pagino_Teka.Models
 {
     public class Book
     {
         public int Id { get; set; }
+        public string Title { get; set; }
+        public string Isbn { get; set; }
 
-        // podstawowe
-        public string Title { get; set; } = string.Empty;
-        public string Isbn { get; set; } = string.Empty;
-
-        // metadane
-        public int? Year { get; set; } = null;           // rok wydania (nullable)
-        public int? Tome { get; set; } = null;           // tom / wolumin (nullable)
-        public int Pages { get; set; }
-        public int ReadTime { get; set; }
-
-        // tekstowe reprezentacje autorów (stosowane w formularzach)
-        public string AuthorsText { get; set; } = string.Empty;
-
-        // jeżeli gdzieś używane są ID i nazwy wydawcy/serii
+        // Relacje
         public int PublisherId { get; set; }
-        public string PublisherName { get; set; } = string.Empty;
+        public int SeriesId { get; set; }
 
-        public int? SeriesId { get; set; }
-        public string SeriesName { get; set; } = string.Empty;
-        public int? SeriesNumber { get; set; } = null;
+        public int? SeriesNumber { get; set; }
+        public int? Tome { get; set; }
+        public int? Year { get; set; }
 
-        // pola używane przez repozytoria i formularze
-        public int AuthorId { get; set; }                 // główny autor (id)
-        public int GenreId { get; set; }                  // pojedynczy gatunek (jeśli tak to trzymasz)
+        // Dodatkowe dane
+        public int Pages { get; set; }          // liczba stron
+        public int ReadTime { get; set; }       // czas czytania (opcjonalnie liczony)
+        public string Description { get; set; }
+        public string AuthorsText { get; set; }
+        public string ImagePath { get; set; }
 
-        // opis i ścieżka obrazu
-        public string Description { get; set; } = string.Empty;
-        public string ImagePath { get; set; } = string.Empty;
+        // dla wygody formularza
+        public string PublisherName { get; set; }
+        public string SeriesName { get; set; }
+
+        // Gatunki
+        public List<int> GenreIds { get; set; } = new List<int>();
     }
 }

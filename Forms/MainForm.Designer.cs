@@ -32,11 +32,6 @@
             toolStripMenuItem1 = new ToolStripMenuItem();
             DodajKsiążkęToolStripMenuItem = new ToolStripMenuItem();
             edytujPozycjęToolStripMenuItem = new ToolStripMenuItem();
-            wyszukajKsiążkęToolStripMenuItem = new ToolStripMenuItem();
-            poAutorzeToolStripMenuItem = new ToolStripMenuItem();
-            poTytuleToolStripMenuItem = new ToolStripMenuItem();
-            poSeriiToolStripMenuItem = new ToolStripMenuItem();
-            poWydawcyToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem2 = new ToolStripMenuItem();
             dodajFilmToolStripMenuItem = new ToolStripMenuItem();
             edytujPozycjęToolStripMenuItem1 = new ToolStripMenuItem();
@@ -63,7 +58,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { DodajKsiążkęToolStripMenuItem, edytujPozycjęToolStripMenuItem, wyszukajKsiążkęToolStripMenuItem });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { DodajKsiążkęToolStripMenuItem, edytujPozycjęToolStripMenuItem });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(119, 20);
             toolStripMenuItem1.Text = "Przeczytane Książki";
@@ -80,38 +75,6 @@
             edytujPozycjęToolStripMenuItem.Name = "edytujPozycjęToolStripMenuItem";
             edytujPozycjęToolStripMenuItem.Size = new Size(180, 22);
             edytujPozycjęToolStripMenuItem.Text = "Edytuj pozycję";
-            // 
-            // wyszukajKsiążkęToolStripMenuItem
-            // 
-            wyszukajKsiążkęToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { poAutorzeToolStripMenuItem, poTytuleToolStripMenuItem, poSeriiToolStripMenuItem, poWydawcyToolStripMenuItem });
-            wyszukajKsiążkęToolStripMenuItem.Name = "wyszukajKsiążkęToolStripMenuItem";
-            wyszukajKsiążkęToolStripMenuItem.Size = new Size(180, 22);
-            wyszukajKsiążkęToolStripMenuItem.Text = "Wyszukaj książkę";
-            // 
-            // poAutorzeToolStripMenuItem
-            // 
-            poAutorzeToolStripMenuItem.Name = "poAutorzeToolStripMenuItem";
-            poAutorzeToolStripMenuItem.Size = new Size(180, 22);
-            poAutorzeToolStripMenuItem.Text = "Po Autorze";
-            poAutorzeToolStripMenuItem.Click += poAutorzeToolStripMenuItem_Click;
-            // 
-            // poTytuleToolStripMenuItem
-            // 
-            poTytuleToolStripMenuItem.Name = "poTytuleToolStripMenuItem";
-            poTytuleToolStripMenuItem.Size = new Size(180, 22);
-            poTytuleToolStripMenuItem.Text = "Po Tytule";
-            // 
-            // poSeriiToolStripMenuItem
-            // 
-            poSeriiToolStripMenuItem.Name = "poSeriiToolStripMenuItem";
-            poSeriiToolStripMenuItem.Size = new Size(180, 22);
-            poSeriiToolStripMenuItem.Text = "Po Serii";
-            // 
-            // poWydawcyToolStripMenuItem
-            // 
-            poWydawcyToolStripMenuItem.Name = "poWydawcyToolStripMenuItem";
-            poWydawcyToolStripMenuItem.Size = new Size(180, 22);
-            poWydawcyToolStripMenuItem.Text = "Po Wydawcy";
             // 
             // toolStripMenuItem2
             // 
@@ -232,10 +195,5 @@
         private ToolStripMenuItem ciemnyToolStripMenuItem;
         private ToolStripMenuItem statustoolStripMenuItem3;
         private ToolStripMenuItem konfiguracjaToolStripMenuItem;
-        private ToolStripMenuItem wyszukajKsiążkęToolStripMenuItem;
-        private ToolStripMenuItem poAutorzeToolStripMenuItem;
-        private ToolStripMenuItem poTytuleToolStripMenuItem;
-        private ToolStripMenuItem poSeriiToolStripMenuItem;
-        private ToolStripMenuItem poWydawcyToolStripMenuItem;
     }
 }

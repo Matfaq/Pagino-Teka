@@ -1,5 +1,4 @@
 ﻿using Pagino_Teka.Forms;
-using Pagino_Teka.Forms.Dialogs;
 using Pagino_Teka.Services;
 using Pagino_Teka;
 using System;
@@ -234,38 +233,7 @@ namespace Pagino_Teka
             }
         }
 
-        private void poAutorzeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using var dlg = new SearchAuthorDialog();
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                string author = dlg.AuthorName;
-
-                // Wyszukanie książek autora w BookService
-                var books = BookService.Instance.SearchByAuthor(author);
-
-                if (books == null || books.Count == 0)
-                {
-                    MessageBox.Show($"Nie znaleziono książek autora: {author}", "Brak wyników", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Wyświetlenie listy książek autora
-                using var listForm = new AuthorBooksListForm(books);
-                if (listForm.ShowDialog() == DialogResult.OK)
-                {
-                    // Pobranie wybranej książki do edycji/usunięcia
-                    var selectedBook = listForm.SelectedBook;
-                    if (selectedBook != null)
-                    {
-                        using var editForm = new EditBookForm(selectedBook);
-                        editForm.ShowDialog();
-
-                        // Po zamknięciu editForm można odświeżyć listę/menu, jeśli potrzebne
-                    }
-                }
-            }
-        }
+       
 
     }
 }

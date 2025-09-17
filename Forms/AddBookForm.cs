@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Pagino_Teka.Models;
-using Pagino_Teka.Repositories;
 using Pagino_Teka.Database;
 using Pagino_Teka.Services;
 using Pagino_Teka.Theme;
@@ -21,7 +20,7 @@ namespace Pagino_Teka
             InitializeComponent();
 
             _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
-            _bookService = new BookService(_databaseService);
+            _bookService = BookService.Instance;
 
             // Podpięcie zdarzeń przycisków
             button_AddPublisher.Click += button_AddPublisher_Click;
@@ -94,7 +93,7 @@ namespace Pagino_Teka
 
             try
             {
-                var meta = await _bookService.GetBookByIsbnAsync(isbn); // teraz BookMetadata
+                var meta = await _bookService.GetBookByIsbnAsync(isbn);
 
                 textBox_BookTitle.Text = meta.Title;
                 textBox_Autorzy.Text = string.Join(", ", meta.Authors ?? Enumerable.Empty<string>());
@@ -226,10 +225,17 @@ namespace Pagino_Teka
                     ReadTime = int.TryParse(textBox_ReadTime.Text, out var rt) ? rt : 0,
                     Tome = int.TryParse(textBox_Tome.Text, out var tVal) ? tVal : null,
                     SeriesName = comboBox_BookSeries.Text?.Trim() ?? string.Empty,
-                    PublisherName = (comboBox_Publisher.SelectedItem as Publisher)?.Name ?? comboBox_Publisher.Text?.Trim() ?? string.Empty,
+                    PublisherName = (comboBox_Publisher.SelectedItem as Publisher)?.Name
+                                    ?? comboBox_Publisher.Text?.Trim() ?? string.Empty,
                     AuthorsText = textBox_Autorzy.Text.Trim(),
                     Description = text_BookNote.Text?.Trim() ?? string.Empty,
-                    ImagePath = SaveCoverImageIfNeeded()
+                    ImagePath = SaveCoverImageIfNeeded(),
+
+                    // 🔹 zapis gatunków
+                    GenreIds = checkedListBox_Gatunki.CheckedItems
+                                    .OfType<Genre>()
+                                    .Select(g => g.Id)
+                                    .ToList()
                 };
 
                 _bookService.SaveBook(book);

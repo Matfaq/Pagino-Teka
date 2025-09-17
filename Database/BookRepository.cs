@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Pagino_Teka.Models;
 using Pagino_Teka.Services;
 using System;
@@ -39,12 +39,12 @@ namespace Pagino_Teka.Repositories
 
             book.Id = id;
 
-            // gatunki
-            if (book.GenreId > 0)
+            // 🔹 zapis wielu gatunków
+            foreach (var gid in book.GenreIds)
             {
                 _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
                     new SqliteParameter("@book_id", id),
-                    new SqliteParameter("@genre_id", book.GenreId));
+                    new SqliteParameter("@genre_id", gid));
             }
         }
 
@@ -74,15 +74,15 @@ namespace Pagino_Teka.Repositories
                 new SqliteParameter("@id", book.Id)
             );
 
-            // gatunki
+            // 🔹 odświeżenie gatunków
             _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
                 new SqliteParameter("@book_id", book.Id));
 
-            if (book.GenreId > 0)
+            foreach (var gid in book.GenreIds)
             {
                 _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
                     new SqliteParameter("@book_id", book.Id),
-                    new SqliteParameter("@genre_id", book.GenreId));
+                    new SqliteParameter("@genre_id", gid));
             }
         }
 
@@ -140,7 +140,7 @@ namespace Pagino_Teka.Repositories
                     }
                 }
 
-                // Ok�adka (korzystamy z serwera covers.openlibrary.org)
+                // Okładka (korzystamy z serwera covers.openlibrary.org)
                 meta.CoverUrl = $"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg";
 
                 return meta;
