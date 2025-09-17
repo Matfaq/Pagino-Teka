@@ -7,6 +7,7 @@ using Pagino_Teka.Repositories;
 using Pagino_Teka.Database;
 using Pagino_Teka.Services;
 using Pagino_Teka.Theme;
+using System.Collections.Generic;
 
 namespace Pagino_Teka
 {
@@ -27,7 +28,6 @@ namespace Pagino_Teka
             button_ZapiszKsiążkę.Click += button_ZapiszKsiążkę_Click;
             button_ZapiszKolejna.Click += button_ZapiszKolejna_Click;
             button_PobierzISBN.Click += button_PobierzISBN_Click;
-            button_PobierzZSieci.Click += button_PobierzISBN_Click;
             button_WybierzZDysku.Click += button_WybierzZDysku_Click;
             button_Anuluj.Click += button_Anuluj_Click;
 
@@ -43,7 +43,7 @@ namespace Pagino_Teka
             checkedListBox_Gatunki.BeginUpdate();
             checkedListBox_Gatunki.Items.Clear();
 
-            var genres = _bookService.GetGenres();
+            var genres = _bookService.GetAllGenres();
             foreach (var g in genres)
                 checkedListBox_Gatunki.Items.Add(g);
 
@@ -58,10 +58,11 @@ namespace Pagino_Teka
 
             var publishers = _bookService.GetAllPublishers();
             comboBox_Publisher.DataSource = null;
-            comboBox_Publisher.DataSource = publishers;
+            comboBox_Publisher.DataSource = publishers.ToList();
             comboBox_Publisher.DisplayMember = nameof(Publisher.Name);
             comboBox_Publisher.ValueMember = nameof(Publisher.Id);
-            comboBox_Publisher.SelectedIndex = 0;
+            if (comboBox_Publisher.Items.Count > 0)
+                comboBox_Publisher.SelectedIndex = 0;
             comboBox_Publisher.DropDownStyle = ComboBoxStyle.DropDown;
 
             comboBox_Publisher.SelectedIndexChanged += ComboBox_Publisher_SelectedIndexChanged;
@@ -73,7 +74,7 @@ namespace Pagino_Teka
 
             var series = _bookService.GetAllSeries();
             comboBox_BookSeries.DataSource = null;
-            comboBox_BookSeries.DataSource = series;
+            comboBox_BookSeries.DataSource = series.ToList();
             comboBox_BookSeries.DisplayMember = nameof(BookSeries.Name);
             comboBox_BookSeries.ValueMember = nameof(BookSeries.Id);
             comboBox_BookSeries.SelectedIndex = -1;
@@ -93,7 +94,7 @@ namespace Pagino_Teka
 
             try
             {
-                var meta = await _bookService.GetBookByIsbnAsync(isbn);
+                var meta = await _bookService.GetBookByIsbnAsync(isbn); // teraz BookMetadata
 
                 textBox_BookTitle.Text = meta.Title;
                 textBox_Autorzy.Text = string.Join(", ", meta.Authors ?? Enumerable.Empty<string>());
@@ -113,7 +114,7 @@ namespace Pagino_Teka
                     else
                     {
                         var temp = new Publisher { Id = 0, Name = meta.Publisher };
-                        (comboBox_Publisher.DataSource as System.Collections.IList)?.Add(temp);
+                        (comboBox_Publisher.DataSource as List<Publisher>)?.Add(temp);
                         comboBox_Publisher.SelectedItem = temp;
                     }
                 }
@@ -163,9 +164,9 @@ namespace Pagino_Teka
 
             try
             {
-                int id = _bookService.AddPublisherIfNotExists(name);
+                var publisher = _bookService.AddPublisherIfNotExists(name);
                 LoadPublishers();
-                var selected = comboBox_Publisher.Items.Cast<Publisher>().FirstOrDefault(x => x.Id == id);
+                var selected = comboBox_Publisher.Items.Cast<Publisher>().FirstOrDefault(x => x.Id == publisher.Id);
                 if (selected != null)
                     comboBox_Publisher.SelectedItem = selected;
                 else
@@ -185,70 +186,53 @@ namespace Pagino_Teka
             Close();
         }
 
-        private string GetPublicationType()
+        private string SaveCoverImageIfNeeded()
         {
-            if (radioButton_Książka.Checked) return "druk";
-            if (radioButton_Ebook.Checked) return "ebook";
-            if (radioButton_Audiobook.Checked) return "audiobook";
-            return string.Empty;
-        }
+            if (string.IsNullOrWhiteSpace(pictureBox_Okladka.ImageLocation))
+                return string.Empty;
 
-        private string GetAdaptationType()
-        {
-            if (radioButton_NaPodFil.Checked) return "film";
-            if (radioButton_NaPodGry.Checked) return "gra";
-            return string.Empty;
+            string destFolder = Path.Combine(_databaseService.GetAppFolderPath(), "Images", "book_covers");
+            Directory.CreateDirectory(destFolder);
+
+            string fileName = pictureBox_Okladka.ImageLocation.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                ? $"{Guid.NewGuid()}.jpg"
+                : $"{Guid.NewGuid()}_{Path.GetFileName(pictureBox_Okladka.ImageLocation)}";
+
+            string destPath = Path.Combine(destFolder, fileName);
+
+            if (pictureBox_Okladka.ImageLocation.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                using var client = new System.Net.Http.HttpClient();
+                var bytes = client.GetByteArrayAsync(pictureBox_Okladka.ImageLocation).Result;
+                File.WriteAllBytes(destPath, bytes);
+            }
+            else if (File.Exists(pictureBox_Okladka.ImageLocation))
+            {
+                File.Copy(pictureBox_Okladka.ImageLocation, destPath, overwrite: true);
+            }
+
+            return destPath;
         }
 
         private bool SaveBookToDatabase()
         {
             try
             {
-                string title = textBox_BookTitle.Text.Trim();
-                string authorsText = textBox_Autorzy.Text.Trim();
-                string isbn = textBox_Isbn.Text.Trim();
-                var selectedGenres = checkedListBox_Gatunki.CheckedItems.Cast<Genre>().ToList();
-                int pages = int.TryParse(textBox_Pages.Text, out var p) ? p : 0;
-                int readTime = int.TryParse(textBox_ReadTime.Text, out var rt) ? rt : 0;
-                int? tome = int.TryParse(textBox_Tome.Text, out var tVal) ? (int?)tVal : null;
-                string seriesName = comboBox_BookSeries.Text?.Trim() ?? string.Empty;
-                string publishedKind = GetPublicationType();
-                string adaptation = GetAdaptationType();
-                string publisherName = (comboBox_Publisher.SelectedItem as Publisher)?.Name ?? comboBox_Publisher.Text?.Trim() ?? string.Empty;
-                string description = text_BookNote.Text?.Trim() ?? string.Empty;
-
-                string imagePath = string.Empty;
-                if (!string.IsNullOrWhiteSpace(pictureBox_Okladka.ImageLocation))
+                var book = new Book
                 {
-                    string destFolder = Path.Combine(_databaseService.GetAppFolderPath(), "Images", "book_covers");
-                    Directory.CreateDirectory(destFolder);
+                    Title = textBox_BookTitle.Text.Trim(),
+                    Isbn = textBox_Isbn.Text.Trim(),
+                    Pages = int.TryParse(textBox_Pages.Text, out var p) ? p : 0,
+                    ReadTime = int.TryParse(textBox_ReadTime.Text, out var rt) ? rt : 0,
+                    Tome = int.TryParse(textBox_Tome.Text, out var tVal) ? tVal : null,
+                    SeriesName = comboBox_BookSeries.Text?.Trim() ?? string.Empty,
+                    PublisherName = (comboBox_Publisher.SelectedItem as Publisher)?.Name ?? comboBox_Publisher.Text?.Trim() ?? string.Empty,
+                    AuthorsText = textBox_Autorzy.Text.Trim(),
+                    Description = text_BookNote.Text?.Trim() ?? string.Empty,
+                    ImagePath = SaveCoverImageIfNeeded()
+                };
 
-                    string fileName = pictureBox_Okladka.ImageLocation.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                        ? $"{Guid.NewGuid()}.jpg"
-                        : $"{Guid.NewGuid()}_{Path.GetFileName(pictureBox_Okladka.ImageLocation)}";
-
-                    string destPath = Path.Combine(destFolder, fileName);
-
-                    if (pictureBox_Okladka.ImageLocation.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                    {
-                        using var client = new System.Net.Http.HttpClient();
-                        var bytes = client.GetByteArrayAsync(pictureBox_Okladka.ImageLocation).Result;
-                        File.WriteAllBytes(destPath, bytes);
-                    }
-                    else if (File.Exists(pictureBox_Okladka.ImageLocation))
-                    {
-                        File.Copy(pictureBox_Okladka.ImageLocation, destPath, overwrite: true);
-                    }
-
-                    imagePath = destPath;
-                }
-
-                _bookService.SaveBook(
-                    title, authorsText, isbn, selectedGenres, pages, readTime,
-                    seriesName, tome, publishedKind, adaptation,
-                    publisherName, imagePath, description
-                );
-
+                _bookService.SaveBook(book);
                 return true;
             }
             catch (Exception ex)
@@ -300,7 +284,8 @@ namespace Pagino_Teka
             radioButton_NaPodFil.Checked = false;
             radioButton_NaPodGry.Checked = false;
 
-            comboBox_Publisher.SelectedIndex = 0;
+            if (comboBox_Publisher.Items.Count > 0)
+                comboBox_Publisher.SelectedIndex = 0;
             comboBox_BookSeries.SelectedIndex = -1;
 
             for (int i = 0; i < checkedListBox_Gatunki.Items.Count; i++)
@@ -309,7 +294,5 @@ namespace Pagino_Teka
 
         private void ComboBox_Publisher_SelectedIndexChanged(object sender, EventArgs e) { }
         private void ComboBox_BookSeries_SelectedIndexChanged(object sender, EventArgs e) { }
-
-        
     }
 }

@@ -4,6 +4,8 @@ using Pagino_Teka.Services;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Pagino_Teka.Repositories
@@ -18,7 +20,6 @@ namespace Pagino_Teka.Repositories
         }
 
         // --- ADD ---
-
         public void Add(Book book)
         {
             string sql = @"INSERT INTO books (title, isbn, publisher_id, series_id, series_number, tome, year, notes)
@@ -39,19 +40,15 @@ namespace Pagino_Teka.Repositories
             book.Id = id;
 
             // gatunki
-            foreach (var genreId in new[] { book.GenreId })
+            if (book.GenreId > 0)
             {
-                if (genreId > 0)
-                {
-                    _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
-                        new SqliteParameter("@book_id", id),
-                        new SqliteParameter("@genre_id", genreId));
-                }
+                _db.ExecuteNonQuery("INSERT INTO book_genres (book_id, genre_id) VALUES (@book_id, @genre_id)",
+                    new SqliteParameter("@book_id", id),
+                    new SqliteParameter("@genre_id", book.GenreId));
             }
         }
 
         // --- UPDATE ---
-
         public void Update(Book book)
         {
             string sql = @"UPDATE books SET
@@ -90,7 +87,6 @@ namespace Pagino_Teka.Repositories
         }
 
         // --- DELETE ---
-
         public void Delete(int id)
         {
             _db.ExecuteNonQuery("DELETE FROM book_genres WHERE book_id = @book_id",
@@ -99,8 +95,7 @@ namespace Pagino_Teka.Repositories
                 new SqliteParameter("@id", id));
         }
 
-        // --- GET BY ISBN ---
-
+        // --- GET FROM DATABASE ---
         public async Task<Book> GetBookByIsbnAsync(string isbn)
         {
             string sql = "SELECT * FROM books WHERE isbn = @isbn LIMIT 1";
@@ -112,8 +107,51 @@ namespace Pagino_Teka.Repositories
             return MapFromDataRow(dt.Rows[0]);
         }
 
-        // --- GENRES ---
+        // --- GET METADATA FROM API ---
+        public async Task<BookMetadata> GetBookMetadataByIsbnAsync(string isbn)
+        {
+            using var client = new HttpClient();
 
+            var url = $"https://openlibrary.org/isbn/{isbn}.json";
+            try
+            {
+                var json = await client.GetStringAsync(url);
+                using var doc = JsonDocument.Parse(json);
+
+                var meta = new BookMetadata
+                {
+                    Title = doc.RootElement.TryGetProperty("title", out var titleEl) ? titleEl.GetString() : string.Empty,
+                    Pages = doc.RootElement.TryGetProperty("number_of_pages", out var pagesEl) ? pagesEl.GetInt32() : 0,
+                    Description = doc.RootElement.TryGetProperty("description", out var descEl)
+                        ? (descEl.ValueKind == JsonValueKind.Object ? descEl.GetProperty("value").GetString() : descEl.GetString())
+                        : string.Empty,
+                    Publisher = doc.RootElement.TryGetProperty("publishers", out var pubEl) && pubEl.GetArrayLength() > 0
+                        ? pubEl[0].GetString()
+                        : string.Empty
+                };
+
+                // Autorzy
+                if (doc.RootElement.TryGetProperty("authors", out var authorsEl))
+                {
+                    foreach (var a in authorsEl.EnumerateArray())
+                    {
+                        if (a.TryGetProperty("key", out var key))
+                            meta.Authors.Add(key.GetString());
+                    }
+                }
+
+                // Ok³adka (korzystamy z serwera covers.openlibrary.org)
+                meta.CoverUrl = $"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg";
+
+                return meta;
+            }
+            catch
+            {
+                return new BookMetadata { Title = $"ISBN {isbn} (brak danych w OpenLibrary)" };
+            }
+        }
+
+        // --- GENRES ---
         public IEnumerable<Genre> GetAllGenres()
         {
             var list = new List<Genre>();
@@ -133,7 +171,6 @@ namespace Pagino_Teka.Repositories
         }
 
         // --- MAPPER ---
-
         private Book MapFromDataRow(DataRow row)
         {
             return new Book

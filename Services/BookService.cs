@@ -26,26 +26,16 @@ namespace Pagino_Teka.Services
         }
 
         // --- GET methods ---
+        public IEnumerable<Publisher> GetAllPublishers() => PublisherRepository.GetAll();
+        public IEnumerable<BookSeries> GetAllSeries() => BookSeriesRepository.GetAll();
+        public IEnumerable<Genre> GetAllGenres() => BookRepository.GetAllGenres();
 
-        public IEnumerable<Publisher> GetAllPublishers()
+        /// <summary>
+        /// Pobranie metadanych książki z API (OpenLibrary).
+        /// </summary>
+        public async Task<BookMetadata> GetBookByIsbnAsync(string isbn)
         {
-            return PublisherRepository.GetAll();
-        }
-
-        public IEnumerable<BookSeries> GetAllSeries()
-        {
-            return BookSeriesRepository.GetAll();
-        }
-
-        // Ładowanie gatunków jest obsługiwane w BookRepository (a nie przez osobny repozytorium)
-        public IEnumerable<Genre> GetAllGenres()
-        {
-            return BookRepository.GetAllGenres();
-        }
-
-        public async Task<Book> GetBookByIsbnAsync(string isbn)
-        {
-            return await BookRepository.GetBookByIsbnAsync(isbn);
+            return await BookRepository.GetBookMetadataByIsbnAsync(isbn);
         }
 
         // Dodanie wydawcy jeśli nie istnieje
@@ -58,7 +48,6 @@ namespace Pagino_Teka.Services
         }
 
         // --- SAVE / UPDATE / DELETE ---
-
         public void SaveBook(Book book)
         {
             if (book == null) throw new ArgumentNullException(nameof(book));

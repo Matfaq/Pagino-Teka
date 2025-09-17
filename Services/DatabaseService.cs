@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using System.Windows.Forms;
 
@@ -92,6 +93,8 @@ namespace Pagino_Teka.Services
             }
         }
 
+        // --- QUERY METHODS ---
+
         public DataTable ExecuteQuery(string sql, params SqliteParameter[] parameters)
         {
             if (_connection == null)
@@ -103,6 +106,25 @@ namespace Pagino_Teka.Services
                 cmd.Parameters.AddRange(parameters);
 
             using var reader = cmd.ExecuteReader();
+            var table = new DataTable();
+            table.Load(reader);
+            return table;
+        }
+
+        /// <summary>
+        /// Asynchroniczna wersja ExecuteQuery
+        /// </summary>
+        public async Task<DataTable> ExecuteQueryAsync(string sql, params SqliteParameter[] parameters)
+        {
+            if (_connection == null)
+                throw new InvalidOperationException("Baza danych nie została zainicjalizowana.");
+
+            using var cmd = _connection.CreateCommand();
+            cmd.CommandText = sql;
+            if (parameters != null && parameters.Length > 0)
+                cmd.Parameters.AddRange(parameters);
+
+            using var reader = await cmd.ExecuteReaderAsync();
             var table = new DataTable();
             table.Load(reader);
             return table;
@@ -134,6 +156,7 @@ namespace Pagino_Teka.Services
             return cmd.ExecuteScalar();
         }
 
+        // --- PATHS ---
         public string GetAppFolderPath() => _appFolder;
         public string GetDatabasePath() => _dbPath;
     }

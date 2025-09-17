@@ -5,21 +5,25 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace Pagino_Teka.Database
+namespace Pagino_Teka.Repositories
 {
     public class BookSeriesRepository
     {
-        private readonly DatabaseService _databaseService;
+        private readonly DatabaseService _db;
 
         public BookSeriesRepository(DatabaseService databaseService)
         {
-            _databaseService = databaseService;
+            _db = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
         }
 
-        public List<BookSeries> GetAllSeries()
+        /// <summary>
+        /// Pobiera wszystkie serie książek.
+        /// </summary>
+        public IEnumerable<BookSeries> GetAll()
         {
             var series = new List<BookSeries>();
-            DataTable table = _databaseService.ExecuteQuery("SELECT id, name FROM BookSeries ORDER BY name;");
+            DataTable table = _db.ExecuteQuery("SELECT id, name FROM BookSeries ORDER BY name;");
+
             foreach (DataRow row in table.Rows)
             {
                 series.Add(new BookSeries
@@ -28,12 +32,16 @@ namespace Pagino_Teka.Database
                     Name = row["name"].ToString() ?? string.Empty
                 });
             }
+
             return series;
         }
 
-        public BookSeries? GetSeriesByName(string name)
+        /// <summary>
+        /// Pobiera serię po nazwie.
+        /// </summary>
+        public BookSeries? GetByName(string name)
         {
-            DataTable table = _databaseService.ExecuteQuery(
+            DataTable table = _db.ExecuteQuery(
                 "SELECT id, name FROM BookSeries WHERE name = @name LIMIT 1;",
                 new SqliteParameter("@name", name)
             );
@@ -48,17 +56,20 @@ namespace Pagino_Teka.Database
             };
         }
 
-        public int AddSeriesIfNotExists(string name)
+        /// <summary>
+        /// Dodaje serię, jeśli nie istnieje, i zwraca jej ID.
+        /// </summary>
+        public int AddIfNotExists(string name)
         {
-            var existing = GetSeriesByName(name);
+            var existing = GetByName(name);
             if (existing != null) return existing.Id;
 
-            _databaseService.ExecuteNonQuery(
+            _db.ExecuteNonQuery(
                 "INSERT INTO BookSeries (name) VALUES (@name);",
                 new SqliteParameter("@name", name)
             );
 
-            object idObj = _databaseService.ExecuteScalar("SELECT last_insert_rowid();");
+            object idObj = _db.ExecuteScalar("SELECT last_insert_rowid();");
             return Convert.ToInt32(idObj);
         }
     }

@@ -26,6 +26,10 @@
         private void InitializeComponent()
         {
             tableLayoutPanel1 = new TableLayoutPanel();
+            label_Adaptation = new Label();
+            groupBox2 = new GroupBox();
+            comboBox_Publisher = new ComboBox();
+            button_AddPublisher = new Button();
             groupBox1 = new GroupBox();
             textBox_Isbn = new TextBox();
             button_PobierzISBN = new Button();
@@ -52,8 +56,7 @@
             groupBox_AdaptationType = new GroupBox();
             radioButton_NaPodFil = new RadioButton();
             radioButton_NaPodGry = new RadioButton();
-            comboBox_Publisher = new ComboBox();
-            button_AddPublisher = new Button();
+            label_Publication = new Label();
             label_Notes = new Label();
             text_BookNote = new RichTextBox();
             label_Cover = new Label();
@@ -62,14 +65,13 @@
             button_ZapiszKsiążkę = new Button();
             button_ZapiszKolejna = new Button();
             button_Anuluj = new Button();
-            groupBox2 = new GroupBox();
             label_Okładka = new Label();
             tableLayoutPanel1.SuspendLayout();
+            groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox_PublicationType.SuspendLayout();
             groupBox_AdaptationType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox_Okladka).BeginInit();
-            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -78,6 +80,7 @@
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(label_Adaptation, 0, 16);
             tableLayoutPanel1.Controls.Add(groupBox2, 1, 18);
             tableLayoutPanel1.Controls.Add(groupBox1, 1, 2);
             tableLayoutPanel1.Controls.Add(textBox_BookTitle, 1, 0);
@@ -98,6 +101,7 @@
             tableLayoutPanel1.Controls.Add(textBox_ReadTime, 1, 15);
             tableLayoutPanel1.Controls.Add(label_ReadTime, 0, 15);
             tableLayoutPanel1.Controls.Add(groupBox_AdaptationType, 1, 16);
+            tableLayoutPanel1.Controls.Add(label_Publication, 0, 17);
             tableLayoutPanel1.Location = new Point(12, 12);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 19;
@@ -122,6 +126,42 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.Size = new Size(388, 521);
             tableLayoutPanel1.TabIndex = 0;
+            // 
+            // label_Adaptation
+            // 
+            label_Adaptation.Anchor = AnchorStyles.Left;
+            label_Adaptation.AutoSize = true;
+            label_Adaptation.Location = new Point(3, 334);
+            label_Adaptation.Name = "label_Adaptation";
+            label_Adaptation.Size = new Size(63, 15);
+            label_Adaptation.TabIndex = 25;
+            label_Adaptation.Text = "Adaptacja:";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(comboBox_Publisher);
+            groupBox2.Controls.Add(button_AddPublisher);
+            groupBox2.Location = new Point(123, 490);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(259, 27);
+            groupBox2.TabIndex = 24;
+            groupBox2.TabStop = false;
+            // 
+            // comboBox_Publisher
+            // 
+            comboBox_Publisher.Anchor = AnchorStyles.Left;
+            comboBox_Publisher.Location = new Point(0, 3);
+            comboBox_Publisher.Name = "comboBox_Publisher";
+            comboBox_Publisher.Size = new Size(155, 23);
+            comboBox_Publisher.TabIndex = 16;
+            // 
+            // button_AddPublisher
+            // 
+            button_AddPublisher.Location = new Point(161, 3);
+            button_AddPublisher.Name = "button_AddPublisher";
+            button_AddPublisher.Size = new Size(98, 23);
+            button_AddPublisher.TabIndex = 17;
+            button_AddPublisher.Text = "Dodaj wydawcę";
             // 
             // groupBox1
             // 
@@ -352,21 +392,15 @@
             radioButton_NaPodGry.TabIndex = 1;
             radioButton_NaPodGry.Text = "Na podstawie gry";
             // 
-            // comboBox_Publisher
+            // label_Publication
             // 
-            comboBox_Publisher.Anchor = AnchorStyles.Left;
-            comboBox_Publisher.Location = new Point(0, 3);
-            comboBox_Publisher.Name = "comboBox_Publisher";
-            comboBox_Publisher.Size = new Size(155, 23);
-            comboBox_Publisher.TabIndex = 16;
-            // 
-            // button_AddPublisher
-            // 
-            button_AddPublisher.Location = new Point(161, 3);
-            button_AddPublisher.Name = "button_AddPublisher";
-            button_AddPublisher.Size = new Size(98, 23);
-            button_AddPublisher.TabIndex = 17;
-            button_AddPublisher.Text = "Dodaj wydawcę";
+            label_Publication.Anchor = AnchorStyles.Left;
+            label_Publication.AutoSize = true;
+            label_Publication.Location = new Point(3, 426);
+            label_Publication.Name = "label_Publication";
+            label_Publication.Size = new Size(99, 15);
+            label_Publication.TabIndex = 25;
+            label_Publication.Text = "Rodzaj publikacji:";
             // 
             // label_Notes
             // 
@@ -380,7 +414,7 @@
             // 
             text_BookNote.Location = new Point(419, 348);
             text_BookNote.Name = "text_BookNote";
-            text_BookNote.Size = new Size(306, 156);
+            text_BookNote.Size = new Size(319, 156);
             text_BookNote.TabIndex = 23;
             text_BookNote.Text = "";
             // 
@@ -411,32 +445,25 @@
             // 
             button_ZapiszKsiążkę.Location = new Point(419, 510);
             button_ZapiszKsiążkę.Name = "button_ZapiszKsiążkę";
-            button_ZapiszKsiążkę.Size = new Size(75, 23);
+            button_ZapiszKsiążkę.Size = new Size(100, 23);
             button_ZapiszKsiążkę.TabIndex = 3;
+            button_ZapiszKsiążkę.Text = "Zapisz Książkę";
             // 
             // button_ZapiszKolejna
             // 
-            button_ZapiszKolejna.Location = new Point(500, 510);
+            button_ZapiszKolejna.Location = new Point(525, 510);
             button_ZapiszKolejna.Name = "button_ZapiszKolejna";
-            button_ZapiszKolejna.Size = new Size(75, 23);
+            button_ZapiszKolejna.Size = new Size(132, 23);
             button_ZapiszKolejna.TabIndex = 4;
+            button_ZapiszKolejna.Text = "Zapisz i dodaj kolejną";
             // 
             // button_Anuluj
             // 
-            button_Anuluj.Location = new Point(650, 510);
+            button_Anuluj.Location = new Point(663, 510);
             button_Anuluj.Name = "button_Anuluj";
             button_Anuluj.Size = new Size(75, 23);
             button_Anuluj.TabIndex = 5;
-            // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(comboBox_Publisher);
-            groupBox2.Controls.Add(button_AddPublisher);
-            groupBox2.Location = new Point(123, 490);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(259, 27);
-            groupBox2.TabIndex = 24;
-            groupBox2.TabStop = false;
+            button_Anuluj.Text = "Anuluj";
             // 
             // label_Okładka
             // 
@@ -449,7 +476,7 @@
             // 
             // AddBookForm
             // 
-            ClientSize = new Size(746, 553);
+            ClientSize = new Size(787, 590);
             Controls.Add(label_Okładka);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(pictureBox_Okladka);
@@ -468,12 +495,12 @@
             Text = "Dodaj książkę";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            groupBox2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox_PublicationType.ResumeLayout(false);
             groupBox_AdaptationType.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox_Okladka).EndInit();
-            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -488,5 +515,7 @@
         private Label label_ReadTime;
         private GroupBox groupBox2;
         private Label label_Okładka;
+        private Label label_Adaptation;
+        private Label label_Publication;
     }
 }
