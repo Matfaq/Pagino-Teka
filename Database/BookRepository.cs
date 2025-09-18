@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Pagino_Teka.Repositories
+namespace Pagino_Teka.Database
 {
     public class BookRepository
     {
@@ -110,7 +110,7 @@ namespace Pagino_Teka.Repositories
         }
 
         // --- GET FROM DATABASE ---
-        public async Task<Book> GetBookByIsbnAsync(string isbn)
+        public async Task<Book?> GetBookByIsbnAsync(string isbn)
         {
             string sql = "SELECT * FROM books WHERE isbn = @isbn LIMIT 1";
             var dt = await _db.ExecuteQueryAsync(sql, new SqliteParameter("@isbn", isbn));
@@ -134,13 +134,13 @@ namespace Pagino_Teka.Repositories
 
                 var meta = new BookMetadata
                 {
-                    Title = doc.RootElement.TryGetProperty("title", out var titleEl) ? titleEl.GetString() : string.Empty,
+                    Title = doc.RootElement.TryGetProperty("title", out var titleEl) && titleEl.GetString() != null ? titleEl.GetString()! : string.Empty,
                     Pages = doc.RootElement.TryGetProperty("number_of_pages", out var pagesEl) ? pagesEl.GetInt32() : 0,
                     Description = doc.RootElement.TryGetProperty("description", out var descEl)
-                        ? (descEl.ValueKind == JsonValueKind.Object ? descEl.GetProperty("value").GetString() : descEl.GetString())
+                        ? (descEl.ValueKind == JsonValueKind.Object ? descEl.GetProperty("value").GetString() ?? string.Empty : descEl.GetString() ?? string.Empty)
                         : string.Empty,
-                    Publisher = doc.RootElement.TryGetProperty("publishers", out var pubEl) && pubEl.GetArrayLength() > 0
-                        ? pubEl[0].GetString()
+                    Publisher = doc.RootElement.TryGetProperty("publishers", out var pubEl) && pubEl.GetArrayLength() > 0 && pubEl[0].GetString() != null
+                        ? pubEl[0].GetString()!
                         : string.Empty,
                     CoverUrl = $"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg"
                 };
@@ -154,7 +154,7 @@ namespace Pagino_Teka.Repositories
         }
 
         // --- GET METADATA FROM GOOGLE BOOKS ---
-        public async Task<BookMetadata> GetBookMetadataFromGoogleAsync(string isbn, string apiKey)
+        public async Task<BookMetadata?> GetBookMetadataFromGoogleAsync(string isbn, string apiKey)
         {
             using var client = new HttpClient();
             var url = $"https://www.googleapis.com/books/v1/volumes?q=isbn:{isbn}&key={apiKey}";
@@ -171,28 +171,37 @@ namespace Pagino_Teka.Repositories
 
                 var meta = new BookMetadata
                 {
-                    Title = volumeInfo.TryGetProperty("title", out var titleEl) ? titleEl.GetString() : string.Empty,
+                    Title = volumeInfo.TryGetProperty("title", out var titleEl) && titleEl.GetString() != null ? titleEl.GetString()! : string.Empty,
                     Pages = volumeInfo.TryGetProperty("pageCount", out var pagesEl) ? pagesEl.GetInt32() : 0,
-                    Description = volumeInfo.TryGetProperty("description", out var descEl) ? descEl.GetString() : string.Empty,
-                    Publisher = volumeInfo.TryGetProperty("publisher", out var pubEl) ? pubEl.GetString() : string.Empty
+                    Description = volumeInfo.TryGetProperty("description", out var descEl) && descEl.GetString() != null ? descEl.GetString()! : string.Empty,
+                    Publisher = volumeInfo.TryGetProperty("publisher", out var pubEl) && pubEl.GetString() != null ? pubEl.GetString()! : string.Empty
                 };
 
                 if (volumeInfo.TryGetProperty("authors", out var authorsEl))
                 {
                     foreach (var a in authorsEl.EnumerateArray())
-                        meta.Authors.Add(a.GetString());
+                    {
+                        var authorName = a.GetString();
+                        if (authorName != null)
+                            meta.Authors.Add(authorName);
+                    }
                 }
 
                 if (volumeInfo.TryGetProperty("categories", out var catEl))
                 {
                     foreach (var c in catEl.EnumerateArray())
-                        meta.Genres.Add(c.GetString());
+                    {
+                        var genre = c.GetString();
+                        if (genre != null)
+                            meta.Genres.Add(genre);
+                    }
                 }
 
                 if (volumeInfo.TryGetProperty("imageLinks", out var imgEl) &&
-                    imgEl.TryGetProperty("thumbnail", out var thumbEl))
+                    imgEl.TryGetProperty("thumbnail", out var thumbEl) &&
+                    thumbEl.GetString() != null)
                 {
-                    meta.CoverUrl = thumbEl.GetString();
+                    meta.CoverUrl = thumbEl.GetString()!;
                 }
 
                 return meta;
@@ -215,7 +224,7 @@ namespace Pagino_Teka.Repositories
                 list.Add(new Genre
                 {
                     Id = Convert.ToInt32(row["id"]),
-                    Name = row["name"].ToString()
+                    Name = row["name"]?.ToString() ?? string.Empty
                 });
             }
 
@@ -228,8 +237,8 @@ namespace Pagino_Teka.Repositories
             return new Book
             {
                 Id = Convert.ToInt32(row["id"]),
-                Title = row["title"].ToString(),
-                Isbn = row["isbn"].ToString(),
+                Title = row["title"]?.ToString() ?? string.Empty,
+                Isbn = row["isbn"]?.ToString() ?? string.Empty,
                 AuthorId = row["author_id"] != DBNull.Value ? Convert.ToInt32(row["author_id"]) : 0,
                 GenreId = row["genre_id"] != DBNull.Value ? Convert.ToInt32(row["genre_id"]) : 0,
                 PublisherId = row["publisher_id"] != DBNull.Value ? Convert.ToInt32(row["publisher_id"]) : 0,
