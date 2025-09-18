@@ -207,7 +207,7 @@ namespace Pagino_Teka.Repositories
         public IEnumerable<Genre> GetAllGenres()
         {
             var list = new List<Genre>();
-            string sql = "SELECT id, name FROM Genres ORDER BY name";
+            string sql = "SELECT id, name FROM BookGenres ORDER BY name";
             var dt = _db.ExecuteQuery(sql);
 
             foreach (DataRow row in dt.Rows)
