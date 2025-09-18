@@ -72,6 +72,7 @@
             groupBox_PublicationType.SuspendLayout();
             groupBox_AdaptationType.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox_Okladka).BeginInit();
+            openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             SuspendLayout();
             // 
             // tableLayoutPanel1
