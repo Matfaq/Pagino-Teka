@@ -224,19 +224,37 @@ namespace Pagino_Teka
                     Pages = int.TryParse(textBox_Pages.Text, out var p) ? p : 0,
                     ReadTime = int.TryParse(textBox_ReadTime.Text, out var rt) ? rt : 0,
                     Tome = int.TryParse(textBox_Tome.Text, out var tVal) ? tVal : null,
-                    SeriesName = comboBox_BookSeries.Text?.Trim() ?? string.Empty,
-                    PublisherName = (comboBox_Publisher.SelectedItem as Publisher)?.Name
-                                    ?? comboBox_Publisher.Text?.Trim() ?? string.Empty,
-                    AuthorsText = textBox_Autorzy.Text.Trim(),
                     Description = text_BookNote.Text?.Trim() ?? string.Empty,
-                    ImagePath = SaveCoverImageIfNeeded(),
+                    Image = SaveCoverImageIfNeeded(),
 
-                    // 🔹 zapis gatunków
+                    // Poprawne przypisanie ID autora
+                    AuthorId = _bookService.AuthorRepository.AddAuthorIfNotExists(textBox_Autorzy.Text.Trim()),
+
+                    // Poprawne przypisanie ID wydawcy
+                    PublisherId = (comboBox_Publisher.SelectedItem as Publisher)?.Id ?? 0,
+
+                    // Poprawne przypisanie ID serii
+                    BookSeriesId = (comboBox_BookSeries.SelectedItem as BookSeries)?.Id ?? 0,
+
+                    // Poprawne przypisanie rodzaju wydania
+                    PublishedKind = radioButton_Książka.Checked ? "papierowa" :
+                                    radioButton_Ebook.Checked ? "e-book" :
+                                    radioButton_Audiobook.Checked ? "audiobook" : string.Empty,
+
+                    // Adaptacja (opcjonalnie)
+                    Adaptation = radioButton_NaPodFil.Checked ? "film" :
+                                 radioButton_NaPodGry.Checked ? "gra" : string.Empty,
+
+                    // Gatunki
                     GenreIds = checkedListBox_Gatunki.CheckedItems
                                     .OfType<Genre>()
                                     .Select(g => g.Id)
                                     .ToList()
                 };
+
+                // Jeśli obsługujesz pojedynczy gatunek, ustaw GenreId
+                if (book.GenreIds.Count == 1)
+                    book.GenreId = book.GenreIds[0];
 
                 _bookService.SaveBook(book);
                 return true;
