@@ -34,7 +34,7 @@ namespace Pagino_Teka.Forms
             {
                 checkBox_UseGoogleApi.Checked = false;
                 textBox_GoogleApiKey.Text = string.Empty;
-                checkBox_UseTmdbApi.Checked = false; // Domyślnie odznaczony
+                checkBox_UseTmdbApiKey.Checked = false; // Domyślnie odznaczony
                 textBox_TmdbApiKey.Text = string.Empty; // Domyślnie pusty
                 radioButton_Light.Checked = true;
 
@@ -44,7 +44,7 @@ namespace Pagino_Teka.Forms
                     var s = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(json) ?? new UserSettings();
                     checkBox_UseGoogleApi.Checked = s.UseGoogleApi;
                     textBox_GoogleApiKey.Text = s.GoogleApiKey ?? string.Empty;
-                    checkBox_UseTmdbApi.Checked = s.UseTmdbApi;
+                    checkBox_UseTmdbApiKey.Checked = s.UseTmdbApi;
                     textBox_TmdbApiKey.Text = s.TmdbApiKey ?? string.Empty;
                 }
 
@@ -65,7 +65,7 @@ namespace Pagino_Teka.Forms
 
         private void UpdateTmdbKeyTextboxEnabled()
         {
-            textBox_TmdbApiKey.Enabled = checkBox_UseTmdbApi.Checked;
+            textBox_TmdbApiKey.Enabled = checkBox_UseTmdbApiKey.Checked;
         }
 
         private void checkBox_UseGoogleApi_CheckedChanged(object sender, EventArgs e)
@@ -88,7 +88,7 @@ namespace Pagino_Teka.Forms
                 {
                     UseGoogleApi = checkBox_UseGoogleApi.Checked,
                     GoogleApiKey = textBox_GoogleApiKey.Text?.Trim() ?? string.Empty,
-                    UseTmdbApi = checkBox_UseTmdbApi.Checked,
+                    UseTmdbApi = checkBox_UseTmdbApiKey.Checked,
                     TmdbApiKey = textBox_TmdbApiKey.Text?.Trim() ?? string.Empty
                 };
                 var json = System.Text.Json.JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true });
