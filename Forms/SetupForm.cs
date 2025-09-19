@@ -133,5 +133,15 @@ namespace Pagino_Teka.Forms
                     "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void button_TmdbKeyLink_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://www.themoviedb.org/settings/api"); // panel do wygenerowania klucza
+        }
+
+        private void button_DocsTmdbKey_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://developer.themoviedb.org/docs/getting-started"); // dokumentacja API
+        }
     }
 }
