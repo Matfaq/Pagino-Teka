@@ -35,12 +35,12 @@
             radioButton_Dark = new RadioButton();
             button_Save = new Button();
             button_Cancel = new Button();
-            checkBox_UseTmdbApiKey = new CheckBox();
-            label_InfoTmdb = new Label();
-            label_TmdbKey = new Label();
-            textBox_TmdbApiKey = new TextBox();
-            button_TmdbKeyLink = new Button();
-            button_DocsTmdbKey = new Button();
+            checkBox_UseOmdbApiKey = new CheckBox();
+            label_InfoOmdb = new Label();
+            label_OmdbKey = new Label();
+            textBox_OmdbApiKey = new TextBox();
+            button_OmdbKeyLink = new Button();
+            button_DocsOmdbKey = new Button();
             groupBox_Theme.SuspendLayout();
             SuspendLayout();
             // 
@@ -154,73 +154,74 @@
             button_Cancel.UseVisualStyleBackColor = true;
             button_Cancel.Click += button_Cancel_Click;
             // 
-            // checkBox_UseTmdbApiKey
+            // checkBox_UseOmdbApiKey
             // 
-            checkBox_UseTmdbApiKey.AutoSize = true;
-            checkBox_UseTmdbApiKey.Location = new Point(24, 197);
-            checkBox_UseTmdbApiKey.Name = "checkBox_UseTmdbApiKey";
-            checkBox_UseTmdbApiKey.Size = new Size(200, 19);
-            checkBox_UseTmdbApiKey.TabIndex = 9;
-            checkBox_UseTmdbApiKey.Text = "Użyj The Movie Database API Key";
-            checkBox_UseTmdbApiKey.UseVisualStyleBackColor = true;
+            checkBox_UseOmdbApiKey.AutoSize = true;
+            checkBox_UseOmdbApiKey.Location = new Point(24, 197);
+            checkBox_UseOmdbApiKey.Name = "checkBox_UseOmdbApiKey";
+            checkBox_UseOmdbApiKey.Size = new Size(189, 19);
+            checkBox_UseOmdbApiKey.TabIndex = 9;
+            checkBox_UseOmdbApiKey.Text = "Użyj The Open Movie Database";
+            checkBox_UseOmdbApiKey.UseVisualStyleBackColor = true;
+            checkBox_UseOmdbApiKey.CheckedChanged += checkBox_UseOmdbApi_CheckedChanged;
             // 
-            // label_InfoTmdb
+            // label_InfoOmdb
             // 
-            label_InfoTmdb.AutoSize = true;
-            label_InfoTmdb.Location = new Point(24, 225);
-            label_InfoTmdb.MaximumSize = new Size(470, 0);
-            label_InfoTmdb.Name = "label_InfoTmdb";
-            label_InfoTmdb.Size = new Size(451, 30);
-            label_InfoTmdb.TabIndex = 10;
-            label_InfoTmdb.Text = "Możesz podać własny klucz The Movie Database API, aby uzupełniać danych z sieci . Klucz jest opcjonalny i musisz go utworzyć samodzielnie.";
+            label_InfoOmdb.AutoSize = true;
+            label_InfoOmdb.Location = new Point(24, 225);
+            label_InfoOmdb.MaximumSize = new Size(470, 0);
+            label_InfoOmdb.Name = "label_InfoOmdb";
+            label_InfoOmdb.Size = new Size(451, 30);
+            label_InfoOmdb.TabIndex = 10;
+            label_InfoOmdb.Text = "Możesz podać własny klucz The Open Movie Database API, aby uzupełniać danych z sieci . Klucz jest opcjonalny i musisz go utworzyć samodzielnie.";
             // 
-            // label_TmdbKey
+            // label_OmdbKey
             // 
-            label_TmdbKey.AutoSize = true;
-            label_TmdbKey.Location = new Point(24, 265);
-            label_TmdbKey.Name = "label_TmdbKey";
-            label_TmdbKey.Size = new Size(162, 15);
-            label_TmdbKey.TabIndex = 11;
-            label_TmdbKey.Text = "The Movie Database Api Key :";
+            label_OmdbKey.AutoSize = true;
+            label_OmdbKey.Location = new Point(24, 265);
+            label_OmdbKey.Name = "label_OmdbKey";
+            label_OmdbKey.Size = new Size(194, 15);
+            label_OmdbKey.TabIndex = 11;
+            label_OmdbKey.Text = "The Open Movie Database Api Key :";
             // 
-            // textBox_TmdbApiKey
+            // textBox_OmdbApiKey
             // 
-            textBox_TmdbApiKey.Location = new Point(24, 283);
-            textBox_TmdbApiKey.Name = "textBox_TmdbApiKey";
-            textBox_TmdbApiKey.Size = new Size(470, 23);
-            textBox_TmdbApiKey.TabIndex = 12;
+            textBox_OmdbApiKey.Location = new Point(24, 283);
+            textBox_OmdbApiKey.Name = "textBox_OmdbApiKey";
+            textBox_OmdbApiKey.Size = new Size(470, 23);
+            textBox_OmdbApiKey.TabIndex = 12;
             // 
-            // button_TmdbKeyLink
+            // button_OmdbKeyLink
             // 
-            button_TmdbKeyLink.Location = new Point(24, 315);
-            button_TmdbKeyLink.Name = "button_TmdbKeyLink";
-            button_TmdbKeyLink.Size = new Size(220, 30);
-            button_TmdbKeyLink.TabIndex = 13;
-            button_TmdbKeyLink.Text = "🔑 Jak uzyskać klucz (TMdb)";
-            button_TmdbKeyLink.UseVisualStyleBackColor = true;
-            button_TmdbKeyLink.Click += button_TmdbKeyLink_Click;
+            button_OmdbKeyLink.Location = new Point(24, 315);
+            button_OmdbKeyLink.Name = "button_OmdbKeyLink";
+            button_OmdbKeyLink.Size = new Size(220, 30);
+            button_OmdbKeyLink.TabIndex = 13;
+            button_OmdbKeyLink.Text = "🔑 Jak uzyskać klucz (Omdb)";
+            button_OmdbKeyLink.UseVisualStyleBackColor = true;
+            button_OmdbKeyLink.Click += button_OmdbKeyLink_Click;
             // 
-            // button_DocsTmdbKey
+            // button_DocsOmdbKey
             // 
-            button_DocsTmdbKey.Location = new Point(254, 315);
-            button_DocsTmdbKey.Name = "button_DocsTmdbKey";
-            button_DocsTmdbKey.Size = new Size(240, 30);
-            button_DocsTmdbKey.TabIndex = 14;
-            button_DocsTmdbKey.Text = "📘 Dokumentacja TMdb API";
-            button_DocsTmdbKey.UseVisualStyleBackColor = true;
-            button_DocsTmdbKey.Click += button_DocsTmdbKey_Click;
+            button_DocsOmdbKey.Location = new Point(254, 315);
+            button_DocsOmdbKey.Name = "button_DocsOmdbKey";
+            button_DocsOmdbKey.Size = new Size(240, 30);
+            button_DocsOmdbKey.TabIndex = 14;
+            button_DocsOmdbKey.Text = "📘 Dokumentacja Omdb API";
+            button_DocsOmdbKey.UseVisualStyleBackColor = true;
+            button_DocsOmdbKey.Click += button_DocsOmdbKey_Click;
             // 
             // SetupForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(511, 474);
-            Controls.Add(checkBox_UseTmdbApiKey);
-            Controls.Add(label_InfoTmdb);
-            Controls.Add(label_TmdbKey);
-            Controls.Add(textBox_TmdbApiKey);
-            Controls.Add(button_TmdbKeyLink);
-            Controls.Add(button_DocsTmdbKey);
+            Controls.Add(checkBox_UseOmdbApiKey);
+            Controls.Add(label_InfoOmdb);
+            Controls.Add(label_OmdbKey);
+            Controls.Add(textBox_OmdbApiKey);
+            Controls.Add(button_OmdbKeyLink);
+            Controls.Add(button_DocsOmdbKey);
             Controls.Add(checkBox_UseGoogleApi);
             Controls.Add(label_Info);
             Controls.Add(label_GoogleApiKey);
@@ -242,11 +243,11 @@
             ResumeLayout(false);
             PerformLayout();
         }
-        private CheckBox checkBox_UseTmdbApiKey;
-        private Label label_InfoTmdb;
-        private Label label_TmdbKey;
-        private TextBox textBox_TmdbApiKey;
-        private Button button_TmdbKeyLink;
-        private Button button_DocsTmdbKey;
+        private CheckBox checkBox_UseOmdbApiKey;
+        private Label label_InfoOmdb;
+        private Label label_OmdbKey;
+        private TextBox textBox_OmdbApiKey;
+        private Button button_OmdbKeyLink;
+        private Button button_DocsOmdbKey;
     }
 }

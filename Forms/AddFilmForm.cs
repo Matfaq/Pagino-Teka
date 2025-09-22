@@ -109,6 +109,9 @@ namespace Pagino_Teka
             this.Close();
         }
 
-        
+        private void button_PobierzDaneOmdb_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

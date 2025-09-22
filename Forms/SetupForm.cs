@@ -17,8 +17,8 @@ namespace Pagino_Teka.Forms
         {
             public bool UseGoogleApi { get; set; }
             public string GoogleApiKey { get; set; } = string.Empty;
-            public bool UseTmdbApi { get; set; }
-            public string TmdbApiKey { get; set; } = string.Empty;
+            public bool UseOmdbApi { get; set; }
+            public string OmdbApiKey { get; set; } = string.Empty;
         }
 
         public SetupForm(string appDataPath)
@@ -34,8 +34,8 @@ namespace Pagino_Teka.Forms
             {
                 checkBox_UseGoogleApi.Checked = false;
                 textBox_GoogleApiKey.Text = string.Empty;
-                checkBox_UseTmdbApiKey.Checked = false; // Domyślnie odznaczony
-                textBox_TmdbApiKey.Text = string.Empty; // Domyślnie pusty
+                checkBox_UseOmdbApiKey.Checked = false; // Domyślnie odznaczony
+                textBox_OmdbApiKey.Text = string.Empty; // Domyślnie pusty
                 radioButton_Light.Checked = true;
 
                 if (File.Exists(SettingsJsonPath))
@@ -44,12 +44,12 @@ namespace Pagino_Teka.Forms
                     var s = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(json) ?? new UserSettings();
                     checkBox_UseGoogleApi.Checked = s.UseGoogleApi;
                     textBox_GoogleApiKey.Text = s.GoogleApiKey ?? string.Empty;
-                    checkBox_UseTmdbApiKey.Checked = s.UseTmdbApi;
-                    textBox_TmdbApiKey.Text = s.TmdbApiKey ?? string.Empty;
+                    checkBox_UseOmdbApiKey.Checked = s.UseOmdbApi;
+                    textBox_OmdbApiKey.Text = s.OmdbApiKey ?? string.Empty;
                 }
 
                 UpdateApiKeyTextboxEnabled();
-                UpdateTmdbKeyTextboxEnabled();
+                UpdateOmdbKeyTextboxEnabled();
             }
             catch (Exception ex)
             {
@@ -63,9 +63,9 @@ namespace Pagino_Teka.Forms
             textBox_GoogleApiKey.Enabled = checkBox_UseGoogleApi.Checked;
         }
 
-        private void UpdateTmdbKeyTextboxEnabled()
+        private void UpdateOmdbKeyTextboxEnabled()
         {
-            textBox_TmdbApiKey.Enabled = checkBox_UseTmdbApiKey.Checked;
+            textBox_OmdbApiKey.Enabled = checkBox_UseOmdbApiKey.Checked;
         }
 
         private void checkBox_UseGoogleApi_CheckedChanged(object sender, EventArgs e)
@@ -73,9 +73,9 @@ namespace Pagino_Teka.Forms
             UpdateApiKeyTextboxEnabled();
         }
 
-        private void checkBox_UseTmdbApi_CheckedChanged(object sender, EventArgs e)
+        private void checkBox_UseOmdbApi_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateTmdbKeyTextboxEnabled();
+            UpdateOmdbKeyTextboxEnabled();
         }
 
         private void button_Save_Click(object sender, EventArgs e)
@@ -88,8 +88,8 @@ namespace Pagino_Teka.Forms
                 {
                     UseGoogleApi = checkBox_UseGoogleApi.Checked,
                     GoogleApiKey = textBox_GoogleApiKey.Text?.Trim() ?? string.Empty,
-                    UseTmdbApi = checkBox_UseTmdbApiKey.Checked,
-                    TmdbApiKey = textBox_TmdbApiKey.Text?.Trim() ?? string.Empty
+                    UseOmdbApi = checkBox_UseOmdbApiKey.Checked,
+                    OmdbApiKey = textBox_OmdbApiKey.Text?.Trim() ?? string.Empty
                 };
                 var json = System.Text.Json.JsonSerializer.Serialize(s, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsJsonPath, json);
@@ -139,14 +139,14 @@ namespace Pagino_Teka.Forms
             }
         }
 
-        private void button_TmdbKeyLink_Click(object sender, EventArgs e)
+        private void button_OmdbKeyLink_Click(object sender, EventArgs e)
         {
-            OpenUrl("https://www.themoviedb.org/settings/api"); // panel do wygenerowania klucza
+            OpenUrl("https://www.omdbapi.com/apikey.aspx"); // panel do wygenerowania klucza
         }
 
-        private void button_DocsTmdbKey_Click(object sender, EventArgs e)
+        private void button_DocsOmdbKey_Click(object sender, EventArgs e)
         {
-            OpenUrl("https://developer.themoviedb.org/docs/getting-started"); // dokumentacja API
+            OpenUrl("https://www.omdbapi.com/"); // dokumentacja API
         }
     }
 }

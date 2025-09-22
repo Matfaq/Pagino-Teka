@@ -35,6 +35,8 @@
             label_Scenariusz = new Label();
             textBox_FilmScreenwriter = new TextBox();
             tableLayoutPanel1 = new TableLayoutPanel();
+            groupBox_FilmTitle = new GroupBox();
+            button_PobierzDaneOmdb = new Button();
             label_Opis = new Label();
             label_NaPodstawie = new Label();
             textBox_Language = new TextBox();
@@ -55,26 +57,26 @@
             openFileDialog1 = new OpenFileDialog();
             label_Plakat = new Label();
             button_WybierzPlakat = new Button();
-            button_PobierzPlakat = new Button();
             button_ZapiszFilm = new Button();
             tableLayoutPanel1.SuspendLayout();
+            groupBox_FilmTitle.SuspendLayout();
             groupBox_NaPodstawie.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox_Plakat).BeginInit();
             SuspendLayout();
             // 
             // textBox_FilmTitle
             // 
-            textBox_FilmTitle.Location = new Point(120, 3);
+            textBox_FilmTitle.Location = new Point(7, 2);
             textBox_FilmTitle.MaxLength = 200;
             textBox_FilmTitle.Name = "textBox_FilmTitle";
-            textBox_FilmTitle.Size = new Size(289, 23);
+            textBox_FilmTitle.Size = new Size(283, 23);
             textBox_FilmTitle.TabIndex = 0;
             // 
             // label_Tytuł
             // 
             label_Tytuł.Anchor = AnchorStyles.Left;
             label_Tytuł.AutoSize = true;
-            label_Tytuł.Location = new Point(3, 7);
+            label_Tytuł.Location = new Point(3, 25);
             label_Tytuł.Name = "label_Tytuł";
             label_Tytuł.Size = new Size(69, 15);
             label_Tytuł.TabIndex = 1;
@@ -84,7 +86,7 @@
             // 
             label_Reżyser.Anchor = AnchorStyles.Left;
             label_Reżyser.AutoSize = true;
-            label_Reżyser.Location = new Point(3, 36);
+            label_Reżyser.Location = new Point(3, 73);
             label_Reżyser.Name = "label_Reżyser";
             label_Reżyser.Size = new Size(61, 15);
             label_Reżyser.TabIndex = 2;
@@ -92,7 +94,7 @@
             // 
             // textBox_FilmDirector
             // 
-            textBox_FilmDirector.Location = new Point(120, 32);
+            textBox_FilmDirector.Location = new Point(120, 69);
             textBox_FilmDirector.MaxLength = 300;
             textBox_FilmDirector.Name = "textBox_FilmDirector";
             textBox_FilmDirector.Size = new Size(289, 23);
@@ -102,7 +104,7 @@
             // 
             label_Scenariusz.Anchor = AnchorStyles.Left;
             label_Scenariusz.AutoSize = true;
-            label_Scenariusz.Location = new Point(3, 65);
+            label_Scenariusz.Location = new Point(3, 102);
             label_Scenariusz.Name = "label_Scenariusz";
             label_Scenariusz.Size = new Size(68, 15);
             label_Scenariusz.TabIndex = 4;
@@ -110,7 +112,7 @@
             // 
             // textBox_FilmScreenwriter
             // 
-            textBox_FilmScreenwriter.Location = new Point(120, 61);
+            textBox_FilmScreenwriter.Location = new Point(120, 98);
             textBox_FilmScreenwriter.MaxLength = 300;
             textBox_FilmScreenwriter.Name = "textBox_FilmScreenwriter";
             textBox_FilmScreenwriter.Size = new Size(289, 23);
@@ -121,6 +123,7 @@
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 117F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220F));
+            tableLayoutPanel1.Controls.Add(groupBox_FilmTitle, 1, 0);
             tableLayoutPanel1.Controls.Add(label_Opis, 0, 8);
             tableLayoutPanel1.Controls.Add(label_NaPodstawie, 0, 7);
             tableLayoutPanel1.Controls.Add(textBox_Language, 1, 6);
@@ -128,7 +131,6 @@
             tableLayoutPanel1.Controls.Add(label_Gatunek, 0, 5);
             tableLayoutPanel1.Controls.Add(textBox_RunTime, 1, 4);
             tableLayoutPanel1.Controls.Add(label_CzasTrwania, 0, 4);
-            tableLayoutPanel1.Controls.Add(textBox_FilmTitle, 1, 0);
             tableLayoutPanel1.Controls.Add(label_Scenariusz, 0, 2);
             tableLayoutPanel1.Controls.Add(label_Reżyser, 0, 1);
             tableLayoutPanel1.Controls.Add(textBox_FilmDirector, 1, 1);
@@ -154,11 +156,32 @@
             tableLayoutPanel1.Size = new Size(419, 540);
             tableLayoutPanel1.TabIndex = 6;
             // 
+            // groupBox_FilmTitle
+            // 
+            groupBox_FilmTitle.Controls.Add(textBox_FilmTitle);
+            groupBox_FilmTitle.Controls.Add(button_PobierzDaneOmdb);
+            groupBox_FilmTitle.Location = new Point(120, 3);
+            groupBox_FilmTitle.Name = "groupBox_FilmTitle";
+            groupBox_FilmTitle.Size = new Size(296, 60);
+            groupBox_FilmTitle.TabIndex = 18;
+            groupBox_FilmTitle.TabStop = false;
+            // 
+            // button_PobierzDaneOmdb
+            // 
+            button_PobierzDaneOmdb.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button_PobierzDaneOmdb.Location = new Point(6, 31);
+            button_PobierzDaneOmdb.Name = "button_PobierzDaneOmdb";
+            button_PobierzDaneOmdb.Size = new Size(283, 23);
+            button_PobierzDaneOmdb.TabIndex = 16;
+            button_PobierzDaneOmdb.Text = "Pobierz dane z bazy Omdb";
+            button_PobierzDaneOmdb.UseVisualStyleBackColor = true;
+            button_PobierzDaneOmdb.Click += button_PobierzDaneOmdb_Click;
+            // 
             // label_Opis
             // 
             label_Opis.Anchor = AnchorStyles.Left;
             label_Opis.AutoSize = true;
-            label_Opis.Location = new Point(3, 473);
+            label_Opis.Location = new Point(3, 491);
             label_Opis.Name = "label_Opis";
             label_Opis.Size = new Size(68, 15);
             label_Opis.TabIndex = 18;
@@ -168,7 +191,7 @@
             // 
             label_NaPodstawie.Anchor = AnchorStyles.Left;
             label_NaPodstawie.AutoSize = true;
-            label_NaPodstawie.Location = new Point(3, 358);
+            label_NaPodstawie.Location = new Point(3, 395);
             label_NaPodstawie.Name = "label_NaPodstawie";
             label_NaPodstawie.Size = new Size(85, 15);
             label_NaPodstawie.TabIndex = 17;
@@ -176,7 +199,7 @@
             // 
             // textBox_Language
             // 
-            textBox_Language.Location = new Point(120, 284);
+            textBox_Language.Location = new Point(120, 321);
             textBox_Language.Name = "textBox_Language";
             textBox_Language.Size = new Size(193, 23);
             textBox_Language.TabIndex = 14;
@@ -185,7 +208,7 @@
             // 
             label_Język.Anchor = AnchorStyles.Left;
             label_Język.AutoSize = true;
-            label_Język.Location = new Point(3, 288);
+            label_Język.Location = new Point(3, 325);
             label_Język.Name = "label_Język";
             label_Język.Size = new Size(40, 15);
             label_Język.TabIndex = 13;
@@ -195,7 +218,7 @@
             // 
             label_Gatunek.Anchor = AnchorStyles.Left;
             label_Gatunek.AutoSize = true;
-            label_Gatunek.Location = new Point(3, 205);
+            label_Gatunek.Location = new Point(3, 242);
             label_Gatunek.Name = "label_Gatunek";
             label_Gatunek.Size = new Size(57, 15);
             label_Gatunek.TabIndex = 10;
@@ -203,7 +226,7 @@
             // 
             // textBox_RunTime
             // 
-            textBox_RunTime.Location = new Point(120, 119);
+            textBox_RunTime.Location = new Point(120, 156);
             textBox_RunTime.MaxLength = 4;
             textBox_RunTime.Name = "textBox_RunTime";
             textBox_RunTime.Size = new Size(193, 23);
@@ -213,7 +236,7 @@
             // 
             label_CzasTrwania.Anchor = AnchorStyles.Left;
             label_CzasTrwania.AutoSize = true;
-            label_CzasTrwania.Location = new Point(3, 123);
+            label_CzasTrwania.Location = new Point(3, 160);
             label_CzasTrwania.Name = "label_CzasTrwania";
             label_CzasTrwania.Size = new Size(79, 15);
             label_CzasTrwania.TabIndex = 8;
@@ -223,7 +246,7 @@
             // 
             label_RokProdukcji.Anchor = AnchorStyles.Left;
             label_RokProdukcji.AutoSize = true;
-            label_RokProdukcji.Location = new Point(3, 94);
+            label_RokProdukcji.Location = new Point(3, 131);
             label_RokProdukcji.Name = "label_RokProdukcji";
             label_RokProdukcji.Size = new Size(86, 15);
             label_RokProdukcji.TabIndex = 6;
@@ -231,7 +254,7 @@
             // 
             // textBox_FilmYear
             // 
-            textBox_FilmYear.Location = new Point(120, 90);
+            textBox_FilmYear.Location = new Point(120, 127);
             textBox_FilmYear.MaxLength = 4;
             textBox_FilmYear.Name = "textBox_FilmYear";
             textBox_FilmYear.Size = new Size(193, 23);
@@ -242,7 +265,7 @@
             groupBox_NaPodstawie.Controls.Add(radioButton_NP3);
             groupBox_NaPodstawie.Controls.Add(radioButton_NP2);
             groupBox_NaPodstawie.Controls.Add(radioButton_NP1);
-            groupBox_NaPodstawie.Location = new Point(120, 313);
+            groupBox_NaPodstawie.Location = new Point(120, 350);
             groupBox_NaPodstawie.Name = "groupBox_NaPodstawie";
             groupBox_NaPodstawie.Size = new Size(193, 105);
             groupBox_NaPodstawie.TabIndex = 16;
@@ -284,16 +307,16 @@
             // 
             // textBox_description
             // 
-            textBox_description.Location = new Point(120, 424);
+            textBox_description.Location = new Point(120, 461);
             textBox_description.Multiline = true;
             textBox_description.Name = "textBox_description";
-            textBox_description.Size = new Size(289, 106);
+            textBox_description.Size = new Size(289, 76);
             textBox_description.TabIndex = 19;
             // 
             // checkedListBox_FGatunki
             // 
             checkedListBox_FGatunki.FormattingEnabled = true;
-            checkedListBox_FGatunki.Location = new Point(120, 148);
+            checkedListBox_FGatunki.Location = new Point(120, 185);
             checkedListBox_FGatunki.Name = "checkedListBox_FGatunki";
             checkedListBox_FGatunki.Size = new Size(289, 130);
             checkedListBox_FGatunki.TabIndex = 20;
@@ -336,21 +359,11 @@
             button_WybierzPlakat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             button_WybierzPlakat.Location = new Point(504, 368);
             button_WybierzPlakat.Name = "button_WybierzPlakat";
-            button_WybierzPlakat.Size = new Size(70, 23);
+            button_WybierzPlakat.Size = new Size(221, 23);
             button_WybierzPlakat.TabIndex = 15;
-            button_WybierzPlakat.Text = "Wybierz";
+            button_WybierzPlakat.Text = "Wybierz plakat z dysku";
             button_WybierzPlakat.UseVisualStyleBackColor = true;
             button_WybierzPlakat.Click += button_WybierzPlakat_Click;
-            // 
-            // button_PobierzPlakat
-            // 
-            button_PobierzPlakat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button_PobierzPlakat.Location = new Point(626, 368);
-            button_PobierzPlakat.Name = "button_PobierzPlakat";
-            button_PobierzPlakat.Size = new Size(99, 23);
-            button_PobierzPlakat.TabIndex = 16;
-            button_PobierzPlakat.Text = "Pobierz z sieci";
-            button_PobierzPlakat.UseVisualStyleBackColor = true;
             // 
             // button_ZapiszFilm
             // 
@@ -368,7 +381,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(785, 564);
             Controls.Add(button_ZapiszFilm);
-            Controls.Add(button_PobierzPlakat);
             Controls.Add(button_WybierzPlakat);
             Controls.Add(label_Plakat);
             Controls.Add(pictureBox_Plakat);
@@ -380,6 +392,8 @@
             Text = "Dodaj film do kolekcji";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
+            groupBox_FilmTitle.ResumeLayout(false);
+            groupBox_FilmTitle.PerformLayout();
             groupBox_NaPodstawie.ResumeLayout(false);
             groupBox_NaPodstawie.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox_Plakat).EndInit();
@@ -415,8 +429,9 @@
         private TextBox textBox_description;
         private Label label_Plakat;
         private Button button_WybierzPlakat;
-        private Button button_PobierzPlakat;
+        private Button button_PobierzDaneOmdb;
         private Button button_ZapiszFilm;
         private CheckedListBox checkedListBox_FGatunki;
+        private GroupBox groupBox_FilmTitle;
     }
 }
