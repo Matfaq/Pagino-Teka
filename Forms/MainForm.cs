@@ -15,9 +15,15 @@ namespace Pagino_Teka
         private readonly string _appFolder;
         private readonly string _themeFile;
 
+        private SplitContainer splitContainer;
+        private FlowLayoutPanel booksPanel;
+        private FlowLayoutPanel filmsPanel;
+
         public MainForm()
         {
             InitializeComponent();
+            this.WindowState = FormWindowState.Maximized; // Tryb pełnoekranowy
+            InitializePanels();
             Load += MainForm_Load;
 
             // Ścieżka do katalogu aplikacji w profilu użytkownika
@@ -52,6 +58,7 @@ namespace Pagino_Teka
 
                 // 🔹 Wczytanie preferencji motywu
                 LoadThemePreference();
+                LoadLibraryPanels(); // Dodaj to tutaj
             }
             catch (Exception ex)
             {
@@ -159,61 +166,11 @@ namespace Pagino_Teka
         {
             try
             {
-                var dbService = DatabaseService.Instance;
-                var bookService = new BookService(dbService);
-
-                // Liczba książek i autorów
-                int booksCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM books"));
-                int authorsCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM authors"));
-
-                // Liczba zapisanych okładek
-                string coversFolder = Path.Combine(dbService.GetAppFolderPath(), "Images", "book_covers");
-                int coversCount = Directory.Exists(coversFolder) ? Directory.GetFiles(coversFolder).Length : 0;
-
-                // Pobranie wszystkich serii i książek przypisanych do nich
-                var allSeries = bookService.GetAllSeries();
-                var cycleInfo = new StringBuilder();
-                cycleInfo.AppendLine("\n📚 Książki w cyklach:");
-
-                bool hasAny = false;
-
-                foreach (var series in allSeries)
+                string message = BuildStatusMessage();
+                using (var statusForm = new StatusForm(message))
                 {
-                    // Pobieramy książki w tej serii
-                    DataTable booksTable = dbService.ExecuteQuery(
-                        "SELECT title, tome FROM books WHERE book_series_id = @seriesId ORDER BY tome;",
-                        new Microsoft.Data.Sqlite.SqliteParameter("@seriesId", series.Id)
-                    );
-
-                    if (booksTable.Rows.Count == 0)
-                        continue;
-
-                    hasAny = true;
-
-                    // Poprawna odmiana słowa "książka"
-                    string bookWord = booksTable.Rows.Count == 1 ? "książka" :
-                                      (booksTable.Rows.Count >= 2 && booksTable.Rows.Count <= 4) ? "książki" : "książek";
-
-                    cycleInfo.AppendLine($"\n→ Cykl: {series.Name} ({booksTable.Rows.Count} {bookWord})");
-
-                    foreach (DataRow row in booksTable.Rows)
-                    {
-                        string title = row["title"].ToString() ?? string.Empty;
-                        string tome = row["tome"]?.ToString() ?? "?";
-                        cycleInfo.AppendLine($"   #{tome}: {title}");
-                    }
+                    statusForm.ShowDialog(this);
                 }
-
-                if (!hasAny)
-                    cycleInfo.AppendLine("Brak książek przypisanych do cykli.");
-
-                // Tworzymy komunikat
-                string message = $"Liczba książek: {booksCount}\n" +
-                                 $"Liczba autorów: {authorsCount}\n" +
-                                 $"Liczba zapisanych okładek: {coversCount}" +
-                                 cycleInfo.ToString();
-
-                MessageBox.Show(message, "Status bazy", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -233,7 +190,159 @@ namespace Pagino_Teka
             }
         }
 
-       
+        private void InitializePanels()
+        {
+            splitContainer = new SplitContainer
+            {
+                Dock = DockStyle.Fill,
+                Orientation = Orientation.Vertical
+            };
 
+            booksPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true
+            };
+
+            filmsPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true
+            };
+
+            splitContainer.Panel1.Controls.Add(booksPanel);
+            splitContainer.Panel2.Controls.Add(filmsPanel);
+            this.Controls.Add(splitContainer);
+
+            // Ustawienie początkowego podziału 50/50
+            splitContainer.SplitterDistance = this.Width / 2;
+
+            // Dynamiczne dostosowanie podziału przy zmianie rozmiaru okna
+            this.Resize += (s, e) =>
+            {
+                splitContainer.SplitterDistance = this.Width / 2;
+            };
+        }
+
+        private void LoadLibraryPanels()
+        {
+            booksPanel.Controls.Clear();
+            filmsPanel.Controls.Clear();
+
+            var dbService = DatabaseService.Instance;
+
+            // Książki
+            var booksTable = dbService.ExecuteQuery("SELECT title, image FROM books ORDER BY title");
+            foreach (DataRow row in booksTable.Rows)
+            {
+                var panel = CreateItemPanel(row["image"]?.ToString(), row["title"]?.ToString());
+                booksPanel.Controls.Add(panel);
+            }
+
+            // Filmy
+            var filmsTable = dbService.ExecuteQuery("SELECT title, poster FROM filmy ORDER BY title");
+            foreach (DataRow row in filmsTable.Rows)
+            {
+                var panel = CreateItemPanel(row["poster"]?.ToString(), row["title"]?.ToString());
+                filmsPanel.Controls.Add(panel);
+            }
+        }
+
+        private Panel CreateItemPanel(string imagePath, string title)
+        {
+            var itemPanel = new Panel
+            {
+                Width = 120,
+                Height = 180,
+                Margin = new Padding(8)
+            };
+
+            var picture = new PictureBox
+            {
+                Width = 100,
+                Height = 140,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                ImageLocation = !string.IsNullOrWhiteSpace(imagePath) && File.Exists(imagePath) ? imagePath : null
+            };
+
+            var label = new Label
+            {
+                Text = title ?? "",
+                Dock = DockStyle.Bottom,
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                AutoSize = false,
+                Height = 40
+            };
+
+            itemPanel.Controls.Add(picture);
+            itemPanel.Controls.Add(label);
+            label.BringToFront();
+
+            return itemPanel;
+        }
+
+        private string BuildStatusMessage()
+        {
+            var dbService = DatabaseService.Instance;
+            var bookService = new BookService(dbService);
+
+            int booksCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM books"));
+            int authorsCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM authors"));
+            string coversFolder = Path.Combine(dbService.GetAppFolderPath(), "Images", "book_covers");
+            int coversCount = Directory.Exists(coversFolder) ? Directory.GetFiles(coversFolder).Length : 0;
+
+            int filmsCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM filmy"));
+            int screenwritersCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM Screenwriters"));
+            int directorsCount = Convert.ToInt32(dbService.ExecuteScalar("SELECT COUNT(*) FROM Directors"));
+            string postersFolder = Path.Combine(dbService.GetAppFolderPath(), "Images", "film_posters");
+            int postersCount = Directory.Exists(postersFolder) ? Directory.GetFiles(postersFolder).Length : 0;
+
+            var allSeries = bookService.GetAllSeries();
+            var sb = new StringBuilder();
+
+            sb.AppendLine("📖 Statystyki książek i filmów\n");
+            sb.AppendLine($"• Liczba książek: {booksCount}");
+            sb.AppendLine($"• Liczba autorów: {authorsCount}");
+            sb.AppendLine($"• Liczba zapisanych okładek: {coversCount}\n");
+
+            sb.AppendLine("🎬 Statystyki filmów\n");
+            sb.AppendLine($"• Liczba filmów: {filmsCount}");
+            sb.AppendLine($"• Liczba scenarzystów: {screenwritersCount}");
+            sb.AppendLine($"• Liczba reżyserów: {directorsCount}");
+            sb.AppendLine($"• Liczba zapisanych plakatów filmowych: {postersCount}\n");
+
+            sb.AppendLine("────────────────────────────");
+            sb.AppendLine("📚 Książki w cyklach:\n");
+
+            bool hasAny = false;
+            foreach (var series in allSeries)
+            {
+                DataTable booksTable = dbService.ExecuteQuery(
+                    "SELECT title, tome FROM books WHERE book_series_id = @seriesId ORDER BY tome;",
+                    new Microsoft.Data.Sqlite.SqliteParameter("@seriesId", series.Id)
+                );
+
+                if (booksTable.Rows.Count == 0)
+                    continue;
+
+                hasAny = true;
+                string bookWord = booksTable.Rows.Count == 1 ? "książka" :
+                                  (booksTable.Rows.Count >= 2 && booksTable.Rows.Count <= 4) ? "książki" : "książek";
+
+                sb.AppendLine($"→ {series.Name} ({booksTable.Rows.Count} {bookWord})");
+                foreach (DataRow row in booksTable.Rows)
+                {
+                    string title = row["title"].ToString() ?? string.Empty;
+                    string tome = row["tome"]?.ToString() ?? "?";
+                    sb.AppendLine($"   #{tome}: {title}");
+                }
+                sb.AppendLine();
+            }
+
+            if (!hasAny)
+                sb.AppendLine("Brak książek przypisanych do cykli.");
+
+            return sb.ToString();
+        }
     }
 }

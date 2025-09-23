@@ -93,6 +93,37 @@ namespace Pagino_Teka.Services
             }
         }
 
+        public void UpgradeDatabaseIfNeeded()
+        {
+            if (_connection == null)
+                throw new InvalidOperationException("Baza danych nie została zainicjalizowana.");
+
+            // Sprawdź, czy tabela FilmGenresMap istnieje
+            string checkTableSql = "SELECT name FROM sqlite_master WHERE type='table' AND name='FilmGenresMap';";
+            using var cmd = _connection.CreateCommand();
+            cmd.CommandText = checkTableSql;
+            var result = cmd.ExecuteScalar();
+
+            if (result == null)
+            {
+                // Tabela nie istnieje, więc ją utwórz
+                string createTableSql = @"
+                    CREATE TABLE IF NOT EXISTS FilmGenresMap (
+                        film_id INTEGER NOT NULL,
+                        genre_id INTEGER NOT NULL,
+                        FOREIGN KEY (film_id) REFERENCES filmy(id),
+                        FOREIGN KEY (genre_id) REFERENCES FilmGenres(id),
+                        PRIMARY KEY (film_id, genre_id)
+                    );";
+                using var createCmd = _connection.CreateCommand();
+                createCmd.CommandText = createTableSql;
+                createCmd.ExecuteNonQuery();
+
+                MessageBox.Show("Baza danych została zaktualizowana: dodano tabelę FilmGenresMap.",
+                    "Informacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
         // --- QUERY METHODS ---
 
         public DataTable ExecuteQuery(string sql, params SqliteParameter[] parameters)

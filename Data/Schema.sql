@@ -1,4 +1,4 @@
-  -- Tabele normalizujące 
+-- Tabele normalizujące 
   -- Tabele przechowujące unikalne informacje o reżyserach, scenarzystach i gatunkach filmowych
   -- Tabele te są używane do normalizacji danych w bazie danych filmowej
   -- Każda tabela zawiera unikalne identyfikatory i nazwy dla reżyserów, scenarzystów i gatunków filmowych
@@ -165,5 +165,11 @@
 		create index if not exists idx_books_isbn on books (isbn);
 
 
-
-	
+-- Tabela łącząca filmy i gatunki filmowe (wiele-do-wielu)
+CREATE TABLE IF NOT EXISTS FilmGenresMap (
+    film_id INTEGER NOT NULL,
+    genre_id INTEGER NOT NULL,
+    FOREIGN KEY (film_id) REFERENCES filmy(id),
+    FOREIGN KEY (genre_id) REFERENCES FilmGenres(id),
+    PRIMARY KEY (film_id, genre_id)
+);

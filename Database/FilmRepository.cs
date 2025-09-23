@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Pagino_Teka.Models;
 using Pagino_Teka.Services;
+using Pagino_Teka.Database;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,19 +32,27 @@ namespace Pagino_Teka.Database
         /// <param name="film">Obiekt filmu do dodania.</param>
         public void Add(Film film)
         {
-            // Przygotowujemy zapytanie SQL z parametrami
             string sql = @"INSERT INTO filmy (title, director_id, screenwriter_id, year, run_time, genre_id, language, based_on, poster, description)
                            VALUES (@title, @director, @screenwriter, @year, @runtime, @genre, @lang, @basedon, @poster, @desc);
                            SELECT last_insert_rowid();";
 
-            // Wstawiamy dane do bazy i pobieramy ID nowego filmu
+            // Zmieniamy przekazywanie scenarzysty na pierwszy z listy lub DBNull.Value
+            var screenwriterId = (film.ScreenwriterIds != null && film.ScreenwriterIds.Count > 0)
+                ? film.ScreenwriterIds[0]
+                : (object)DBNull.Value;
+
+            // Poprawka: film nie ma właściwości GenreId, więc przekazujemy DBNull.Value lub pierwszy z listy
+            var genreId = (film.GenreIds != null && film.GenreIds.Count > 0)
+                ? film.GenreIds[0]
+                : (object)DBNull.Value;
+
             var id = Convert.ToInt32(_db.ExecuteScalar(sql,
                 new SqliteParameter("@title", film.Title),
                 new SqliteParameter("@director", film.DirectorId),
-                new SqliteParameter("@screenwriter", film.ScreenwriterId),
+                new SqliteParameter("@screenwriter", screenwriterId),
                 new SqliteParameter("@year", film.Year ?? (object)DBNull.Value),
                 new SqliteParameter("@runtime", film.Duration ?? (object)DBNull.Value),
-                new SqliteParameter("@genre", film.GenreId),
+                new SqliteParameter("@genre", genreId),
                 new SqliteParameter("@lang", film.Language ?? string.Empty),
                 new SqliteParameter("@basedon", film.BasedOn ?? string.Empty),
                 new SqliteParameter("@poster", film.Image ?? string.Empty),
@@ -52,12 +61,11 @@ namespace Pagino_Teka.Database
 
             film.Id = id;
 
-            // Jeśli obsługujesz wiele gatunków, zapisz relacje w tabeli powiązań
-            foreach (var genreId in film.GenreIds)
+            foreach (var gid in film.GenreIds ?? new List<int>())
             {
                 _db.ExecuteNonQuery("INSERT INTO FilmGenresMap (film_id, genre_id) VALUES (@film_id, @genre_id)",
                     new SqliteParameter("@film_id", id),
-                    new SqliteParameter("@genre_id", genreId));
+                    new SqliteParameter("@genre_id", gid));
             }
         }
 
@@ -81,13 +89,23 @@ namespace Pagino_Teka.Database
                            description = @desc
                            WHERE id = @id";
 
+            // Zmieniamy przekazywanie scenarzysty na pierwszy z listy lub DBNull.Value
+            var screenwriterId = (film.ScreenwriterIds != null && film.ScreenwriterIds.Count > 0)
+                ? film.ScreenwriterIds[0]
+                : (object)DBNull.Value;
+
+            // Poprawka: film nie ma właściwości GenreId, więc przekazujemy DBNull.Value lub pierwszy z listy
+            var genreId = (film.GenreIds != null && film.GenreIds.Count > 0)
+                ? film.GenreIds[0]
+                : (object)DBNull.Value;
+
             _db.ExecuteNonQuery(sql,
                 new SqliteParameter("@title", film.Title),
                 new SqliteParameter("@director", film.DirectorId),
-                new SqliteParameter("@screenwriter", film.ScreenwriterId),
+                new SqliteParameter("@screenwriter", screenwriterId),
                 new SqliteParameter("@year", film.Year ?? (object)DBNull.Value),
                 new SqliteParameter("@runtime", film.Duration ?? (object)DBNull.Value),
-                new SqliteParameter("@genre", film.GenreId),
+                new SqliteParameter("@genre", genreId),
                 new SqliteParameter("@lang", film.Language ?? string.Empty),
                 new SqliteParameter("@basedon", film.BasedOn ?? string.Empty),
                 new SqliteParameter("@poster", film.Image ?? string.Empty),
@@ -95,14 +113,13 @@ namespace Pagino_Teka.Database
                 new SqliteParameter("@id", film.Id)
             );
 
-            // Usuwamy stare relacje gatunków i dodajemy nowe
             _db.ExecuteNonQuery("DELETE FROM FilmGenresMap WHERE film_id = @film_id",
                 new SqliteParameter("@film_id", film.Id));
-            foreach (var genreId in film.GenreIds)
+            foreach (var genreIdItem in film.GenreIds ?? new List<int>())
             {
                 _db.ExecuteNonQuery("INSERT INTO FilmGenresMap (film_id, genre_id) VALUES (@film_id, @genre_id)",
                     new SqliteParameter("@film_id", film.Id),
-                    new SqliteParameter("@genre_id", genreId));
+                    new SqliteParameter("@genre_id", genreIdItem));
             }
         }
 
@@ -185,10 +202,13 @@ namespace Pagino_Teka.Database
                 Id = Convert.ToInt32(row["id"]),
                 Title = row["title"].ToString(),
                 DirectorId = Convert.ToInt32(row["director_id"]),
-                ScreenwriterId = Convert.ToInt32(row["screenwriter_id"]),
+                // Zamiast ScreenwriterId, przypisz listę z jednym ID lub pustą
+                ScreenwriterIds = row["screenwriter_id"] != DBNull.Value
+                    ? new List<int> { Convert.ToInt32(row["screenwriter_id"]) }
+                    : new List<int>(),
                 Year = row["year"] != DBNull.Value ? Convert.ToInt32(row["year"]) : (int?)null,
                 Duration = row["run_time"] != DBNull.Value ? Convert.ToInt32(row["run_time"]) : (int?)null,
-                GenreId = Convert.ToInt32(row["genre_id"]),
+                // Usuń GenreId, bo nie istnieje w Film
                 Language = row["language"]?.ToString() ?? string.Empty,
                 BasedOn = row["based_on"]?.ToString() ?? string.Empty,
                 Image = row["poster"]?.ToString() ?? string.Empty,
