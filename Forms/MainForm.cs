@@ -198,6 +198,10 @@ namespace Pagino_Teka
                 Orientation = Orientation.Vertical
             };
 
+            // Ustaw minimalne rozmiary paneli, aby uniknąć wyjątku
+            splitContainer.Panel1MinSize = 50;
+            splitContainer.Panel2MinSize = 50;
+
             booksPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -215,12 +219,12 @@ namespace Pagino_Teka
             this.Controls.Add(splitContainer);
 
             // Ustawienie początkowego podziału 50/50
-            splitContainer.SplitterDistance = this.Width / 2;
+            splitContainer.SplitterDistance = Math.Max(this.Width / 2, splitContainer.Panel1MinSize);
 
             // Dynamiczne dostosowanie podziału przy zmianie rozmiaru okna
             this.Resize += (s, e) =>
             {
-                splitContainer.SplitterDistance = this.Width / 2;
+                splitContainer.SplitterDistance = Math.Max(this.Width / 2, splitContainer.Panel1MinSize);
             };
         }
 
