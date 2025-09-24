@@ -18,4 +18,6 @@
 
     // Jeśli obsługujesz wiele gatunków, trzymaj List<int> GenreIds i relację w osobnej tabeli
     public List<int> GenreIds { get; set; } = new();
+    
+    public string AuthorName { get; set; } // tylko do odczytu, nie mapowane do bazy
 }

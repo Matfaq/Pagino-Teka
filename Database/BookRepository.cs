@@ -234,7 +234,7 @@ namespace Pagino_Teka.Database
         // --- MAPPER ---
         private Book MapFromDataRow(DataRow row)
         {
-            return new Book
+            var book = new Book
             {
                 Id = Convert.ToInt32(row["id"]),
                 Title = row["title"]?.ToString() ?? string.Empty,
@@ -250,12 +250,14 @@ namespace Pagino_Teka.Database
                 Adaptation = row["adaptation"]?.ToString() ?? string.Empty,
                 Image = row["image"]?.ToString() ?? string.Empty,
                 Description = row["description"]?.ToString() ?? string.Empty,
-                // Pobierz powiązane gatunki (jeśli obsługujesz wiele)
                 GenreIds = GetGenreIdsForBook(Convert.ToInt32(row["id"]))
             };
+            // Ustaw AuthorName jeśli jest w DataRow (np. po JOIN)
+            if (row.Table.Columns.Contains("author_name"))
+                book.AuthorName = row["author_name"]?.ToString() ?? "";
+            return book;
         }
 
-        // Dodaj pomocniczą metodę do pobierania listy gatunków dla książki
         private List<int> GetGenreIdsForBook(int bookId)
         {
             var genreIds = new List<int>();
@@ -264,6 +266,68 @@ namespace Pagino_Teka.Database
             foreach (DataRow r in dt.Rows)
                 genreIds.Add(Convert.ToInt32(r["genre_id"]));
             return genreIds;
+        }
+
+        // --- FIND BY TITLE ---
+        public IEnumerable<Book> FindByTitle(string title)
+        {
+            string sql = @"SELECT b.*, a.name AS author_name
+                           FROM books b
+                           JOIN Authors a ON b.author_id = a.id
+                           WHERE b.title LIKE @title";
+            var dt = _db.ExecuteQuery(sql, new SqliteParameter("@title", $"%{title}%"));
+            foreach (DataRow row in dt.Rows)
+            {
+                var book = MapFromDataRow(row);
+                yield return book;
+            }
+        }
+
+        // --- FIND BY AUTHOR ---
+        public IEnumerable<Book> FindByAuthor(string author)
+        {
+            string sql = @"SELECT b.*, a.name AS author_name
+                           FROM books b
+                           JOIN Authors a ON b.author_id = a.id
+                           WHERE a.name LIKE @author";
+            var dt = _db.ExecuteQuery(sql, new SqliteParameter("@author", $"%{author}%"));
+            foreach (DataRow row in dt.Rows)
+            {
+                var book = MapFromDataRow(row);
+                yield return book;
+            }
+        }
+
+        // --- FIND BY SERIES ---
+        public IEnumerable<Book> FindBySeries(string series)
+        {
+            string sql = @"SELECT b.*, a.name AS author_name
+                           FROM books b
+                           JOIN Authors a ON b.author_id = a.id
+                           JOIN BookSeries s ON b.book_series_id = s.id
+                           WHERE s.name LIKE @series";
+            var dt = _db.ExecuteQuery(sql, new SqliteParameter("@series", $"%{series}%"));
+            foreach (DataRow row in dt.Rows)
+            {
+                var book = MapFromDataRow(row);
+                yield return book;
+            }
+        }
+
+        // --- FIND BY PUBLISHER ---
+        public IEnumerable<Book> FindByPublisher(string publisher)
+        {
+            string sql = @"SELECT b.*, a.name AS author_name
+                           FROM books b
+                           JOIN Authors a ON b.author_id = a.id
+                           JOIN Publishers p ON b.publisher_id = p.id
+                           WHERE p.name LIKE @publisher";
+            var dt = _db.ExecuteQuery(sql, new SqliteParameter("@publisher", $"%{publisher}%"));
+            foreach (DataRow row in dt.Rows)
+            {
+                var book = MapFromDataRow(row);
+                yield return book;
+            }
         }
     }
 }

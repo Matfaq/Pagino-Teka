@@ -435,5 +435,10 @@ namespace Pagino_Teka
             toolStripStatusLabelReadTime.Text = $"Czas czytania: {totalReadTime} min";
             toolStripStatusLabelFilmLength.Text = $"Czas filmów: {totalFilmLength} min";
         }
+
+        private void poTytuleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

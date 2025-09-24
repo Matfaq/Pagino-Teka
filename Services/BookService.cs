@@ -81,6 +81,11 @@ namespace Pagino_Teka.Services
         public void UpdateBook(Book book) => BookRepository.Update(book);
         public void DeleteBook(int bookId) => BookRepository.Delete(bookId);
 
+        public IEnumerable<Book> FindBooksByTitle(string title) => BookRepository.FindByTitle(title);
+        public IEnumerable<Book> FindBooksByAuthor(string author) => BookRepository.FindByAuthor(author);
+        public IEnumerable<Book> FindBooksBySeries(string series) => BookRepository.FindBySeries(series);
+        public IEnumerable<Book> FindBooksByPublisher(string publisher) => BookRepository.FindByPublisher(publisher);
+
         // ✅ Wczytywanie klucza Google API z user_settings.json
         private string LoadGoogleApiKey()
         {
