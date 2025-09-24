@@ -251,6 +251,8 @@ namespace Pagino_Teka
                 var panel = CreateItemPanel(row["poster"]?.ToString(), row["title"]?.ToString());
                 filmsPanel.Controls.Add(panel);
             }
+
+            UpdateStatusStrip(); // <-- dodaj to tutaj
         }
 
         private Panel CreateItemPanel(string imagePath, string title)
@@ -412,5 +414,22 @@ namespace Pagino_Teka
                 MessageBox.Show($"Błąd podczas tworzenia kopii bazy:\n{ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void UpdateStatusStrip()
+        {
+            int booksCount = Convert.ToInt32(DatabaseService.Instance.ExecuteScalar("SELECT COUNT(*) FROM books"));
+            int filmsCount = Convert.ToInt32(DatabaseService.Instance.ExecuteScalar("SELECT COUNT(*) FROM filmy"));
+            int totalPages = Convert.ToInt32(DatabaseService.Instance.ExecuteScalar("SELECT IFNULL(SUM(pages),0) FROM books"));
+            int totalReadTime = Convert.ToInt32(DatabaseService.Instance.ExecuteScalar("SELECT IFNULL(SUM(read_time),0) FROM books"));
+            int totalFilmLength = Convert.ToInt32(DatabaseService.Instance.ExecuteScalar("SELECT IFNULL(SUM(run_time),0) FROM filmy"));
+
+            toolStripStatusLabelBooks.Text = $"Książki: {booksCount}";
+            toolStripStatusLabelFilms.Text = $"Filmy: {filmsCount}";
+            toolStripStatusLabelPages.Text = $"Stron: {totalPages}";
+            toolStripStatusLabelReadTime.Text = $"Czas czytania: {totalReadTime} min";
+            toolStripStatusLabelFilmLength.Text = $"Czas filmów: {totalFilmLength} min";
+        }
+
+        
     }
 }

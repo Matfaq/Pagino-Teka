@@ -40,13 +40,20 @@
             jasnyToolStripMenuItem = new ToolStripMenuItem();
             ciemnyToolStripMenuItem = new ToolStripMenuItem();
             konfiguracjaToolStripMenuItem = new ToolStripMenuItem();
+            tworzenieKopiiBazyDanychToolStripMenuItem = new ToolStripMenuItem();
             przywracanieKopiiDanychToolStripMenuItem = new ToolStripMenuItem();
             pomocToolStripMenuItem = new ToolStripMenuItem();
             oProgramieToolStripMenuItem = new ToolStripMenuItem();
             wyjścieToolStripMenuItem = new ToolStripMenuItem();
             statustoolStripMenuItem3 = new ToolStripMenuItem();
-            tworzenieKopiiBazyDanychToolStripMenuItem = new ToolStripMenuItem();
+            statusStrip1 = new StatusStrip();
+            toolStripStatusLabelBooks = new ToolStripStatusLabel();
+            toolStripStatusLabelPages = new ToolStripStatusLabel();
+            toolStripStatusLabelReadTime = new ToolStripStatusLabel();
+            toolStripStatusLabelFilms = new ToolStripStatusLabel();
+            toolStripStatusLabelFilmLength = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -133,6 +140,13 @@
             konfiguracjaToolStripMenuItem.Text = "Konfiguracja";
             konfiguracjaToolStripMenuItem.Click += konfiguracjaToolStripMenuItem_Click;
             // 
+            // tworzenieKopiiBazyDanychToolStripMenuItem
+            // 
+            tworzenieKopiiBazyDanychToolStripMenuItem.Name = "tworzenieKopiiBazyDanychToolStripMenuItem";
+            tworzenieKopiiBazyDanychToolStripMenuItem.Size = new Size(224, 22);
+            tworzenieKopiiBazyDanychToolStripMenuItem.Text = "Tworzenie kopii bazy danych";
+            tworzenieKopiiBazyDanychToolStripMenuItem.Click += tworzenieKopiiBazyDanychToolStripMenuItem_Click;
+            // 
             // przywracanieKopiiDanychToolStripMenuItem
             // 
             przywracanieKopiiDanychToolStripMenuItem.Name = "przywracanieKopiiDanychToolStripMenuItem";
@@ -169,18 +183,51 @@
             statustoolStripMenuItem3.Text = "Status";
             statustoolStripMenuItem3.Click += statustoolStripMenuItem3_Click;
             // 
-            // tworzenieKopiiBazyDanychToolStripMenuItem
+            // statusStrip1
             // 
-            tworzenieKopiiBazyDanychToolStripMenuItem.Name = "tworzenieKopiiBazyDanychToolStripMenuItem";
-            tworzenieKopiiBazyDanychToolStripMenuItem.Size = new Size(224, 22);
-            tworzenieKopiiBazyDanychToolStripMenuItem.Text = "Tworzenie kopii bazy danych";
-            tworzenieKopiiBazyDanychToolStripMenuItem.Click += tworzenieKopiiBazyDanychToolStripMenuItem_Click;
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabelBooks, toolStripStatusLabelPages, toolStripStatusLabelReadTime, toolStripStatusLabelFilms, toolStripStatusLabelFilmLength });
+            statusStrip1.Location = new Point(0, 707);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(1008, 22);
+            statusStrip1.TabIndex = 1;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabelBooks
+            // 
+            toolStripStatusLabelBooks.Name = "toolStripStatusLabelBooks";
+            toolStripStatusLabelBooks.Size = new Size(118, 17);
+            toolStripStatusLabelBooks.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabelPages
+            // 
+            toolStripStatusLabelPages.Name = "toolStripStatusLabelPages";
+            toolStripStatusLabelPages.Size = new Size(118, 17);
+            toolStripStatusLabelPages.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabelReadTime
+            // 
+            toolStripStatusLabelReadTime.Name = "toolStripStatusLabelReadTime";
+            toolStripStatusLabelReadTime.Size = new Size(118, 17);
+            toolStripStatusLabelReadTime.Text = "toolStripStatusLabel2";
+            // 
+            // toolStripStatusLabelFilms
+            // 
+            toolStripStatusLabelFilms.Name = "toolStripStatusLabelFilms";
+            toolStripStatusLabelFilms.Size = new Size(118, 17);
+            toolStripStatusLabelFilms.Text = "toolStripStatusLabel2";
+            // 
+            // toolStripStatusLabelFilmLength
+            // 
+            toolStripStatusLabelFilmLength.Name = "toolStripStatusLabelFilmLength";
+            toolStripStatusLabelFilmLength.Size = new Size(118, 17);
+            toolStripStatusLabelFilmLength.Text = "toolStripStatusLabel3";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1008, 729);
+            Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             MinimumSize = new Size(1024, 768);
@@ -189,6 +236,8 @@
             Text = "Pagino-Teka";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -213,5 +262,11 @@
         private ToolStripMenuItem konfiguracjaToolStripMenuItem;
         private ToolStripMenuItem przywracanieKopiiDanychToolStripMenuItem;
         private ToolStripMenuItem tworzenieKopiiBazyDanychToolStripMenuItem;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabelBooks;
+        private ToolStripStatusLabel toolStripStatusLabelFilms;
+        private ToolStripStatusLabel toolStripStatusLabelPages;
+        private ToolStripStatusLabel toolStripStatusLabelReadTime;
+        private ToolStripStatusLabel toolStripStatusLabelFilmLength;
     }
 }
