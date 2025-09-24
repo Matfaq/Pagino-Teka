@@ -22,17 +22,14 @@ namespace Pagino_Teka
         public MainForm()
         {
             InitializeComponent();
-            this.WindowState = FormWindowState.Maximized; // Tryb pełnoekranowy
+            this.WindowState = FormWindowState.Maximized;
             InitializePanels();
             Load += MainForm_Load;
 
-            // Ścieżka do katalogu aplikacji w profilu użytkownika
             _appFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "Pagino-Teka"
             );
-
-            // Plik przechowujący wybrany motyw
             _themeFile = Path.Combine(_appFolder, "theme.txt");
         }
 
@@ -40,7 +37,6 @@ namespace Pagino_Teka
         {
             try
             {
-                // 🔹 Sprawdź czy istnieje plik ustawień (user_settings.json)
                 string settingsFile = Path.Combine(_appFolder, "user_settings.json");
                 if (!File.Exists(settingsFile))
                 {
@@ -53,12 +49,9 @@ namespace Pagino_Teka
                     }
                 }
 
-                // 🔹 Inicjalizacja serwisu bazy danych (katalogi + baza + połączenie)
                 DatabaseService.Instance.Initialize();
-
-                // 🔹 Wczytanie preferencji motywu
                 LoadThemePreference();
-                LoadLibraryPanels(); // Dodaj to tutaj
+                LoadLibraryPanels();
             }
             catch (Exception ex)
             {
@@ -75,7 +68,7 @@ namespace Pagino_Teka
             using var addBookForm = new AddBookForm(DatabaseService.Instance);
             if (addBookForm.ShowDialog() == DialogResult.OK)
             {
-                // Opcjonalnie: odśwież listę książek
+                LoadLibraryPanels();
             }
         }
 
@@ -84,7 +77,7 @@ namespace Pagino_Teka
             using var addFilmForm = new AddFilmForm(DatabaseService.Instance);
             if (addFilmForm.ShowDialog() == DialogResult.OK)
             {
-                // Opcjonalnie: odśwież listę filmów
+                LoadLibraryPanels();
             }
         }
 
@@ -108,7 +101,6 @@ namespace Pagino_Teka
             SaveThemePreference("Dark");
         }
 
-        // 🔹 Zapis preferencji do pliku
         private void SaveThemePreference(string themeName)
         {
             try
@@ -125,7 +117,6 @@ namespace Pagino_Teka
             }
         }
 
-        // 🔹 Wczytanie preferencji z pliku przy starcie
         private void LoadThemePreference()
         {
             try
@@ -144,7 +135,6 @@ namespace Pagino_Teka
                 }
                 else
                 {
-                    // Domyślnie ustaw Light, jeśli plik nie istnieje
                     Theme.ThemeManager.SetTheme(Theme.Themes.Light);
                 }
 
@@ -157,11 +147,6 @@ namespace Pagino_Teka
             }
         }
 
-        /// <summary>
-        /// 🔹 Obsługa kliknięcia w Status w menu
-        /// Wyświetla okno z liczbą książek, autorów, zapisanych okładek
-        /// oraz zestawienie książek w cyklach (grupowane wg serii z licznikiem)
-        /// </summary>
         private void statustoolStripMenuItem3_Click(object sender, EventArgs e)
         {
             try
@@ -179,7 +164,6 @@ namespace Pagino_Teka
             }
         }
 
-        // 🔹 Obsługa wywołania konfiguracji z menu
         private void konfiguracjaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using var setupForm = new SetupForm(_appFolder);
@@ -187,7 +171,7 @@ namespace Pagino_Teka
             if (result == DialogResult.OK)
             {
                 LoadThemePreference();
-                LoadLibraryPanels(); // <-- odświeżenie paneli po resecie
+                LoadLibraryPanels();
             }
         }
 
@@ -199,7 +183,6 @@ namespace Pagino_Teka
                 Orientation = Orientation.Vertical
             };
 
-            // Ustaw minimalne rozmiary paneli, aby uniknąć wyjątku
             splitContainer.Panel1MinSize = 50;
             splitContainer.Panel2MinSize = 50;
 
@@ -219,10 +202,8 @@ namespace Pagino_Teka
             splitContainer.Panel2.Controls.Add(filmsPanel);
             this.Controls.Add(splitContainer);
 
-            // Ustawienie początkowego podziału 50/50
             splitContainer.SplitterDistance = Math.Max(this.Width / 2, splitContainer.Panel1MinSize);
 
-            // Dynamiczne dostosowanie podziału przy zmianie rozmiaru okna
             this.Resize += (s, e) =>
             {
                 splitContainer.SplitterDistance = Math.Max(this.Width / 2, splitContainer.Panel1MinSize);
@@ -236,26 +217,42 @@ namespace Pagino_Teka
 
             var dbService = DatabaseService.Instance;
 
-            // Książki
-            var booksTable = dbService.ExecuteQuery("SELECT title, image FROM books ORDER BY title");
+            // Książki z autorem i opisem
+            var booksTable = dbService.ExecuteQuery(
+                @"SELECT b.title, b.image, a.name AS author, b.description
+                  FROM books b
+                  LEFT JOIN Authors a ON b.author_id = a.id
+                  ORDER BY b.title"
+            );
             foreach (DataRow row in booksTable.Rows)
             {
-                var panel = CreateItemPanel(row["image"]?.ToString(), row["title"]?.ToString());
+                var panel = CreateItemPanel(
+                    row["image"]?.ToString(),
+                    row["title"]?.ToString(),
+                    row["author"]?.ToString(),
+                    row["description"]?.ToString()
+                );
                 booksPanel.Controls.Add(panel);
             }
 
             // Filmy
-            var filmsTable = dbService.ExecuteQuery("SELECT title, poster FROM filmy ORDER BY title");
+            var filmsTable = dbService.ExecuteQuery("SELECT title, poster, description FROM filmy ORDER BY title");
             foreach (DataRow row in filmsTable.Rows)
             {
-                var panel = CreateItemPanel(row["poster"]?.ToString(), row["title"]?.ToString());
+                var panel = CreateItemPanel(
+                    row["poster"]?.ToString(),
+                    row["title"]?.ToString(),
+                    null, // brak autora
+                    row["description"]?.ToString() // opis filmu
+                );
                 filmsPanel.Controls.Add(panel);
             }
 
-            UpdateStatusStrip(); // <-- dodaj to tutaj
+            UpdateStatusStrip();
         }
 
-        private Panel CreateItemPanel(string imagePath, string title)
+        // Przeciążona wersja dla książek z tooltipem
+        private Panel CreateItemPanel(string imagePath, string title, string author = null, string description = null)
         {
             var itemPanel = new Panel
             {
@@ -284,6 +281,18 @@ namespace Pagino_Teka
             itemPanel.Controls.Add(picture);
             itemPanel.Controls.Add(label);
             label.BringToFront();
+
+            // Tooltip z autorem i opisem
+            if (!string.IsNullOrWhiteSpace(author) || !string.IsNullOrWhiteSpace(description))
+            {
+                var tooltip = new ToolTip();
+                string tooltipText = "";
+                if (!string.IsNullOrWhiteSpace(author))
+                    tooltipText += $"Autor: {author}\n";
+                if (!string.IsNullOrWhiteSpace(description))
+                    tooltipText += description;
+                tooltip.SetToolTip(picture, tooltipText.Trim());
+            }
 
             return itemPanel;
         }
@@ -358,7 +367,7 @@ namespace Pagino_Teka
             {
                 Title = "Wybierz plik kopii bazy danych",
                 Filter = "Pliki bazy danych (*.db)|*.db|Wszystkie pliki (*.*)|*.*",
-                InitialDirectory = _appFolder // domyślnie folder aplikacji w profilu użytkownika
+                InitialDirectory = _appFolder
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -366,17 +375,14 @@ namespace Pagino_Teka
                 try
                 {
                     string dbPath = Path.Combine(_appFolder, "pa-te.db");
-                    // Zamknij połączenie z bazą jeśli jest otwarte
                     DatabaseService.Instance.CloseConnectionIfOpen();
 
                     File.Copy(dialog.FileName, dbPath, overwrite: true);
 
-                    // Po przywróceniu bazy należy ponownie zainicjalizować połączenie!
                     DatabaseService.Instance.Initialize();
 
                     MessageBox.Show("Przywrócono bazę danych z kopii.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Odśwież panele z miniaturami
                     LoadLibraryPanels();
                 }
                 catch (Exception ex)
@@ -429,7 +435,5 @@ namespace Pagino_Teka
             toolStripStatusLabelReadTime.Text = $"Czas czytania: {totalReadTime} min";
             toolStripStatusLabelFilmLength.Text = $"Czas filmów: {totalFilmLength} min";
         }
-
-        
     }
 }
