@@ -41,7 +41,13 @@
             textBox_OmdbApiKey = new TextBox();
             button_OmdbKeyLink = new Button();
             button_DocsOmdbKey = new Button();
+            groupBox_ResetDB = new GroupBox();
+            button_ResetAll = new Button();
+            button_ResetFilms = new Button();
+            button_ResetBooks = new Button();
+            label1 = new Label();
             groupBox_Theme.SuspendLayout();
+            groupBox_ResetDB.SuspendLayout();
             SuspendLayout();
             // 
             // checkBox_UseGoogleApi
@@ -211,11 +217,64 @@
             button_DocsOmdbKey.UseVisualStyleBackColor = true;
             button_DocsOmdbKey.Click += button_DocsOmdbKey_Click;
             // 
+            // groupBox_ResetDB
+            // 
+            groupBox_ResetDB.Controls.Add(button_ResetAll);
+            groupBox_ResetDB.Controls.Add(button_ResetFilms);
+            groupBox_ResetDB.Controls.Add(button_ResetBooks);
+            groupBox_ResetDB.Controls.Add(label1);
+            groupBox_ResetDB.ForeColor = Color.Red;
+            groupBox_ResetDB.Location = new Point(24, 481);
+            groupBox_ResetDB.Name = "groupBox_ResetDB";
+            groupBox_ResetDB.Size = new Size(470, 115);
+            groupBox_ResetDB.TabIndex = 15;
+            groupBox_ResetDB.TabStop = false;
+            groupBox_ResetDB.Text = "Resetowanie danych w bazie";
+            // 
+            // button_ResetAll
+            // 
+            button_ResetAll.Location = new Point(6, 84);
+            button_ResetAll.Name = "button_ResetAll";
+            button_ResetAll.Size = new Size(458, 23);
+            button_ResetAll.TabIndex = 3;
+            button_ResetAll.Text = "Zresetuj wszystkie dane do stanu początkowego";
+            button_ResetAll.UseVisualStyleBackColor = true;
+            button_ResetAll.Click += button_ResetAll_Click;
+            // 
+            // button_ResetFilms
+            // 
+            button_ResetFilms.Location = new Point(250, 55);
+            button_ResetFilms.Name = "button_ResetFilms";
+            button_ResetFilms.Size = new Size(214, 23);
+            button_ResetFilms.TabIndex = 2;
+            button_ResetFilms.Text = "Resetuj dane Filmów";
+            button_ResetFilms.UseVisualStyleBackColor = true;
+            button_ResetFilms.Click += button_ResetFilms_Click;
+            // 
+            // button_ResetBooks
+            // 
+            button_ResetBooks.Location = new Point(6, 55);
+            button_ResetBooks.Name = "button_ResetBooks";
+            button_ResetBooks.Size = new Size(226, 23);
+            button_ResetBooks.TabIndex = 1;
+            button_ResetBooks.Text = "Resetuj dane Książek";
+            button_ResetBooks.UseVisualStyleBackColor = true;
+            button_ResetBooks.Click += button_ResetBooks_Click;
+            // 
+            // label1
+            // 
+            label1.Location = new Point(6, 19);
+            label1.Name = "label1";
+            label1.Size = new Size(458, 33);
+            label1.TabIndex = 0;
+            label1.Text = "Możesz zresetować wszystkie zapisane dane o książkach i/lub filmach. Operacja jest nieodwracalna – po resecie wszystkie informacje zostaną trwale usunięte.";
+            // 
             // SetupForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(511, 474);
+            ClientSize = new Size(511, 602);
+            Controls.Add(groupBox_ResetDB);
             Controls.Add(checkBox_UseOmdbApiKey);
             Controls.Add(label_InfoOmdb);
             Controls.Add(label_OmdbKey);
@@ -240,6 +299,7 @@
             Load += SetupForm_Load;
             groupBox_Theme.ResumeLayout(false);
             groupBox_Theme.PerformLayout();
+            groupBox_ResetDB.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -249,5 +309,10 @@
         private TextBox textBox_OmdbApiKey;
         private Button button_OmdbKeyLink;
         private Button button_DocsOmdbKey;
+        private GroupBox groupBox_ResetDB;
+        private Label label1;
+        private Button button_ResetBooks;
+        private Button button_ResetAll;
+        private Button button_ResetFilms;
     }
 }

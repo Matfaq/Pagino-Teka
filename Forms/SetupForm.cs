@@ -148,5 +148,223 @@ namespace Pagino_Teka.Forms
         {
             OpenUrl("https://www.omdbapi.com/"); // dokumentacja API
         }
+
+        private void button_ResetFilms_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                "Ta operacja usunie WSZYSTKIE dane o filmach, reżyserach i scenarzystach!\n" +
+                "Tej operacji NIE MOŻNA cofnąć.\n\n" +
+                "Przed kontynuacją zostanie utworzona kopia zapasowa bazy danych.\n\n" +
+                "Czy na pewno chcesz kontynuować?",
+                "Potwierdzenie resetu danych filmowych",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                // Ścieżka do bazy danych
+                string dbPath = Path.Combine(_appDataPath, "pa-te.db");
+                if (!File.Exists(dbPath))
+                {
+                    MessageBox.Show("Nie znaleziono pliku bazy danych.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Tworzenie kopii zapasowej
+                string backupPath = Path.Combine(_appDataPath, $"pa-te_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db");
+                File.Copy(dbPath, backupPath);
+
+                // Usuwanie danych z tabel filmowych
+                using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+
+                        command.CommandText = "DELETE FROM FilmGenresMap;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM filmy;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM Directors;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM Screenwriters;";
+                        command.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                }
+
+                MessageBox.Show(
+                    $"Dane filmowe zostały usunięte.\nKopia zapasowa bazy: {backupPath}",
+                    "Sukces",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                // Zamknij SetupForm z wynikiem OK, aby MainForm mogła zareagować
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas resetowania danych filmowych:\n{ex.Message}",
+                    "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button_ResetBooks_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                "Ta operacja usunie WSZYSTKIE dane o książkach, autorach, wydawcach, cyklach i powiązaniach!\n" +
+                "Tej operacji NIE MOŻNA cofnąć.\n\n" +
+                "Przed kontynuacją zostanie utworzona kopia zapasowa bazy danych.\n\n" +
+                "Czy na pewno chcesz kontynuować?",
+                "Potwierdzenie resetu danych książkowych",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                string dbPath = Path.Combine(_appDataPath, "pa-te.db");
+                if (!File.Exists(dbPath))
+                {
+                    MessageBox.Show("Nie znaleziono pliku bazy danych.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Tworzenie kopii zapasowej
+                string backupPath = Path.Combine(_appDataPath, $"pa-te_backup_books_{DateTime.Now:yyyyMMdd_HHmmss}.db");
+                File.Copy(dbPath, backupPath);
+
+                // Usuwanie danych z tabel książkowych (z pominięciem BookGenres)
+                using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+
+                        command.CommandText = "DELETE FROM BookGenresMap;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM books;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM Authors;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM Publishers;";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = "DELETE FROM BookSeries;";
+                        command.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                }
+
+                MessageBox.Show(
+                    $"Dane książkowe zostały usunięte.\nKopia zapasowa bazy: {backupPath}",
+                    "Sukces",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas resetowania danych książkowych:\n{ex.Message}",
+                    "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button_ResetAll_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                "Ta operacja usunie WSZYSTKIE dane o książkach, filmach, autorach, wydawcach, cyklach, reżyserach, scenarzystach i powiązaniach!\n" +
+                "Tej operacji NIE MOŻNA cofnąć.\n\n" +
+                "Przed kontynuacją zostanie utworzona kopia zapasowa bazy danych.\n\n" +
+                "Czy na pewno chcesz kontynuować?",
+                "Potwierdzenie pełnego resetu danych",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
+            try
+            {
+                string dbPath = Path.Combine(_appDataPath, "pa-te.db");
+                if (!File.Exists(dbPath))
+                {
+                    MessageBox.Show("Nie znaleziono pliku bazy danych.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Tworzenie kopii zapasowej
+                string backupPath = Path.Combine(_appDataPath, $"pa-te_backup_all_{DateTime.Now:yyyyMMdd_HHmmss}.db");
+                File.Copy(dbPath, backupPath);
+
+                using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+
+                        // Książki
+                        command.CommandText = "DELETE FROM BookGenresMap;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM books;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM Authors;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM Publishers;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM BookSeries;";
+                        command.ExecuteNonQuery();
+
+                        // Filmy
+                        command.CommandText = "DELETE FROM FilmGenresMap;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM filmy;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM Directors;";
+                        command.ExecuteNonQuery();
+                        command.CommandText = "DELETE FROM Screenwriters;";
+                        command.ExecuteNonQuery();
+
+                        transaction.Commit();
+                    }
+                }
+
+                MessageBox.Show(
+                    $"Wszystkie dane zostały usunięte.\nKopia zapasowa bazy: {backupPath}",
+                    "Sukces",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas resetowania wszystkich danych:\n{ex.Message}",
+                    "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

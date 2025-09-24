@@ -226,26 +226,14 @@ namespace Pagino_Teka
                     Tome = int.TryParse(textBox_Tome.Text, out var tVal) ? tVal : null,
                     Description = text_BookNote.Text?.Trim() ?? string.Empty,
                     Image = SaveCoverImageIfNeeded(),
-
-                    // Poprawne przypisanie ID autora
                     AuthorId = _bookService.AuthorRepository.AddAuthorIfNotExists(textBox_Autorzy.Text.Trim()),
-
-                    // Poprawne przypisanie ID wydawcy
                     PublisherId = (comboBox_Publisher.SelectedItem as Publisher)?.Id ?? 0,
-
-                    // Poprawne przypisanie ID serii
                     BookSeriesId = (comboBox_BookSeries.SelectedItem as BookSeries)?.Id ?? 0,
-
-                    // Poprawne przypisanie rodzaju wydania
                     PublishedKind = radioButton_Książka.Checked ? "papierowa" :
                                     radioButton_Ebook.Checked ? "e-book" :
                                     radioButton_Audiobook.Checked ? "audiobook" : string.Empty,
-
-                    // Adaptacja (opcjonalnie)
                     Adaptation = radioButton_NaPodFil.Checked ? "film" :
                                  radioButton_NaPodGry.Checked ? "gra" : string.Empty,
-
-                    // Gatunki
                     GenreIds = checkedListBox_Gatunki.CheckedItems
                                     .OfType<Genre>()
                                     .Select(g => g.Id)
@@ -256,13 +244,38 @@ namespace Pagino_Teka
                 if (book.GenreIds.Count == 1)
                     book.GenreId = book.GenreIds[0];
 
+                // Zapisz książkę i pobierz jej ID (jeśli Add zwraca ID, użyj go)
                 _bookService.SaveBook(book);
+
+                // Zapisz powiązania książka-gatunek (wiele gatunków)
+                SaveBookGenresMap(book);
+
                 return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Błąd przy zapisie książki:\n{ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
+        }
+
+        // Dodaj tę metodę do AddBookForm
+        private void SaveBookGenresMap(Book book)
+        {
+            // Usuń stare powiązania (przy edycji lub na wszelki wypadek)
+            _databaseService.ExecuteNonQuery(
+                "DELETE FROM BookGenresMap WHERE book_id = @bookId",
+                new Microsoft.Data.Sqlite.SqliteParameter("@bookId", book.Id)
+            );
+
+            // Dodaj nowe powiązania
+            foreach (var genreId in book.GenreIds)
+            {
+                _databaseService.ExecuteNonQuery(
+                    "INSERT INTO BookGenresMap (book_id, genre_id) VALUES (@bookId, @genreId)",
+                    new Microsoft.Data.Sqlite.SqliteParameter("@bookId", book.Id),
+                    new Microsoft.Data.Sqlite.SqliteParameter("@genreId", genreId)
+                );
             }
         }
 

@@ -173,3 +173,12 @@ CREATE TABLE IF NOT EXISTS FilmGenresMap (
     FOREIGN KEY (genre_id) REFERENCES FilmGenres(id),
     PRIMARY KEY (film_id, genre_id)
 );
+
+-- Nowa tabela łącząca książki i gatunki (wiele-do-wielu)
+CREATE TABLE IF NOT EXISTS BookGenresMap (
+    book_id INTEGER NOT NULL,
+    genre_id INTEGER NOT NULL,
+    FOREIGN KEY (book_id) REFERENCES books(id),
+    FOREIGN KEY (genre_id) REFERENCES BookGenres(id),
+    PRIMARY KEY (book_id, genre_id)
+);

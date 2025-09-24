@@ -40,10 +40,12 @@
             jasnyToolStripMenuItem = new ToolStripMenuItem();
             ciemnyToolStripMenuItem = new ToolStripMenuItem();
             konfiguracjaToolStripMenuItem = new ToolStripMenuItem();
+            przywracanieKopiiDanychToolStripMenuItem = new ToolStripMenuItem();
             pomocToolStripMenuItem = new ToolStripMenuItem();
             oProgramieToolStripMenuItem = new ToolStripMenuItem();
             wyjścieToolStripMenuItem = new ToolStripMenuItem();
             statustoolStripMenuItem3 = new ToolStripMenuItem();
+            tworzenieKopiiBazyDanychToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,14 +68,14 @@
             // DodajKsiążkęToolStripMenuItem
             // 
             DodajKsiążkęToolStripMenuItem.Name = "DodajKsiążkęToolStripMenuItem";
-            DodajKsiążkęToolStripMenuItem.Size = new Size(180, 22);
+            DodajKsiążkęToolStripMenuItem.Size = new Size(150, 22);
             DodajKsiążkęToolStripMenuItem.Text = "Dodaj Książkę";
             DodajKsiążkęToolStripMenuItem.Click += DodajKsiążkęToolStripMenuItem_Click;
             // 
             // edytujPozycjęToolStripMenuItem
             // 
             edytujPozycjęToolStripMenuItem.Name = "edytujPozycjęToolStripMenuItem";
-            edytujPozycjęToolStripMenuItem.Size = new Size(180, 22);
+            edytujPozycjęToolStripMenuItem.Size = new Size(150, 22);
             edytujPozycjęToolStripMenuItem.Text = "Edytuj pozycję";
             // 
             // toolStripMenuItem2
@@ -98,7 +100,7 @@
             // 
             // ustawieniaToolStripMenuItem
             // 
-            ustawieniaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { motywToolStripMenuItem, konfiguracjaToolStripMenuItem });
+            ustawieniaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { motywToolStripMenuItem, konfiguracjaToolStripMenuItem, tworzenieKopiiBazyDanychToolStripMenuItem, przywracanieKopiiDanychToolStripMenuItem });
             ustawieniaToolStripMenuItem.Name = "ustawieniaToolStripMenuItem";
             ustawieniaToolStripMenuItem.Size = new Size(76, 20);
             ustawieniaToolStripMenuItem.Text = "Ustawienia";
@@ -107,7 +109,7 @@
             // 
             motywToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { jasnyToolStripMenuItem, ciemnyToolStripMenuItem });
             motywToolStripMenuItem.Name = "motywToolStripMenuItem";
-            motywToolStripMenuItem.Size = new Size(141, 22);
+            motywToolStripMenuItem.Size = new Size(224, 22);
             motywToolStripMenuItem.Text = "Motyw";
             // 
             // jasnyToolStripMenuItem
@@ -127,9 +129,16 @@
             // konfiguracjaToolStripMenuItem
             // 
             konfiguracjaToolStripMenuItem.Name = "konfiguracjaToolStripMenuItem";
-            konfiguracjaToolStripMenuItem.Size = new Size(141, 22);
+            konfiguracjaToolStripMenuItem.Size = new Size(224, 22);
             konfiguracjaToolStripMenuItem.Text = "Konfiguracja";
             konfiguracjaToolStripMenuItem.Click += konfiguracjaToolStripMenuItem_Click;
+            // 
+            // przywracanieKopiiDanychToolStripMenuItem
+            // 
+            przywracanieKopiiDanychToolStripMenuItem.Name = "przywracanieKopiiDanychToolStripMenuItem";
+            przywracanieKopiiDanychToolStripMenuItem.Size = new Size(224, 22);
+            przywracanieKopiiDanychToolStripMenuItem.Text = "Przywracanie kopii danych";
+            przywracanieKopiiDanychToolStripMenuItem.Click += przywracanieKopiiDanychToolStripMenuItem_Click;
             // 
             // pomocToolStripMenuItem
             // 
@@ -159,6 +168,13 @@
             statustoolStripMenuItem3.Size = new Size(51, 20);
             statustoolStripMenuItem3.Text = "Status";
             statustoolStripMenuItem3.Click += statustoolStripMenuItem3_Click;
+            // 
+            // tworzenieKopiiBazyDanychToolStripMenuItem
+            // 
+            tworzenieKopiiBazyDanychToolStripMenuItem.Name = "tworzenieKopiiBazyDanychToolStripMenuItem";
+            tworzenieKopiiBazyDanychToolStripMenuItem.Size = new Size(224, 22);
+            tworzenieKopiiBazyDanychToolStripMenuItem.Text = "Tworzenie kopii bazy danych";
+            tworzenieKopiiBazyDanychToolStripMenuItem.Click += tworzenieKopiiBazyDanychToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -195,5 +211,7 @@
         private ToolStripMenuItem ciemnyToolStripMenuItem;
         private ToolStripMenuItem statustoolStripMenuItem3;
         private ToolStripMenuItem konfiguracjaToolStripMenuItem;
+        private ToolStripMenuItem przywracanieKopiiDanychToolStripMenuItem;
+        private ToolStripMenuItem tworzenieKopiiBazyDanychToolStripMenuItem;
     }
 }

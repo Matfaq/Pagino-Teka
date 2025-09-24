@@ -187,6 +187,7 @@ namespace Pagino_Teka
             if (result == DialogResult.OK)
             {
                 LoadThemePreference();
+                LoadLibraryPanels(); // <-- odświeżenie paneli po resecie
             }
         }
 
@@ -347,6 +348,69 @@ namespace Pagino_Teka
                 sb.AppendLine("Brak książek przypisanych do cykli.");
 
             return sb.ToString();
+        }
+
+        private void przywracanieKopiiDanychToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using var dialog = new OpenFileDialog
+            {
+                Title = "Wybierz plik kopii bazy danych",
+                Filter = "Pliki bazy danych (*.db)|*.db|Wszystkie pliki (*.*)|*.*",
+                InitialDirectory = _appFolder // domyślnie folder aplikacji w profilu użytkownika
+            };
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string dbPath = Path.Combine(_appFolder, "pa-te.db");
+                    // Zamknij połączenie z bazą jeśli jest otwarte
+                    DatabaseService.Instance.CloseConnectionIfOpen();
+
+                    File.Copy(dialog.FileName, dbPath, overwrite: true);
+
+                    // Po przywróceniu bazy należy ponownie zainicjalizować połączenie!
+                    DatabaseService.Instance.Initialize();
+
+                    MessageBox.Show("Przywrócono bazę danych z kopii.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Odśwież panele z miniaturami
+                    LoadLibraryPanels();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Błąd podczas przywracania bazy:\n{ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void tworzenieKopiiBazyDanychToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string dbPath = Path.Combine(_appFolder, "pa-te.db");
+                if (!File.Exists(dbPath))
+                {
+                    MessageBox.Show("Nie znaleziono pliku bazy danych.", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                string backupFolder = Path.Combine(_appFolder, "Backups");
+                Directory.CreateDirectory(backupFolder);
+
+                string backupFile = Path.Combine(
+                    backupFolder,
+                    $"pa-te_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db"
+                );
+
+                File.Copy(dbPath, backupFile);
+
+                MessageBox.Show($"Kopia bazy danych została utworzona:\n{backupFile}", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas tworzenia kopii bazy:\n{ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
