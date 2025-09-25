@@ -3,14 +3,14 @@
     partial class SearchForm
     {
         /// <summary>
-        /// Required designer variable.
+        /// Wymagana zmienna projektanta.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Wyczyść wszystkie używane zasoby.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true, jeśli zarządzane zasoby powinny zostać zlikwidowane; w przeciwnym razie false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,62 +20,51 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Kod generowany przez Projektanta formularzy systemu Windows
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Metoda wymagana do obsługi projektanta — nie należy modyfikować
+        /// jej zawartości w edytorze kodu.
         /// </summary>
         private void InitializeComponent()
         {
-            label_Search = new Label();
-            textBox_Search = new TextBox();
-            button_Search = new Button();
-            SuspendLayout();
-            // 
-            // label_Search
-            // 
-            label_Search.AutoSize = true;
-            label_Search.Location = new Point(12, 9);
-            label_Search.Name = "label_Search";
-            label_Search.Size = new Size(141, 15);
-            label_Search.TabIndex = 0;
-            label_Search.Text = "Wpisz wyszukiwaną frazę:";
+            this.textBox_Search = new System.Windows.Forms.TextBox();
+            this.buttonSearch = new System.Windows.Forms.Button();
+            this.SuspendLayout();
             // 
             // textBox_Search
             // 
-            textBox_Search.Location = new Point(12, 28);
-            textBox_Search.Name = "textBox_Search";
-            textBox_Search.Size = new Size(272, 23);
-            textBox_Search.TabIndex = 1;
+            this.textBox_Search.Location = new System.Drawing.Point(12, 12);
+            this.textBox_Search.Name = "textBox_Search";
+            this.textBox_Search.Size = new System.Drawing.Size(200, 23);
+            this.textBox_Search.TabIndex = 0;
             // 
-            // button_Search
+            // buttonSearch
             // 
-            button_Search.Location = new Point(302, 28);
-            button_Search.Name = "button_Search";
-            button_Search.Size = new Size(146, 23);
-            button_Search.TabIndex = 2;
-            button_Search.Text = "Wyszukaj";
-            button_Search.UseVisualStyleBackColor = true;
+            this.buttonSearch.Location = new System.Drawing.Point(220, 10);
+            this.buttonSearch.Name = "buttonSearch";
+            this.buttonSearch.Size = new System.Drawing.Size(75, 27);
+            this.buttonSearch.TabIndex = 1;
+            this.buttonSearch.Text = "Szukaj";
+            this.buttonSearch.UseVisualStyleBackColor = true;
+            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
             // 
             // SearchForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(463, 64);
-            Controls.Add(button_Search);
-            Controls.Add(textBox_Search);
-            Controls.Add(label_Search);
-            Name = "SearchForm";
-            Text = "Wyszukiwanie";
-            ResumeLayout(false);
-            PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(310, 50);
+            this.Controls.Add(this.buttonSearch);
+            this.Controls.Add(this.textBox_Search);
+            this.Name = "SearchForm";
+            this.Text = "Wyszukaj książkę";
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
 
-        private Label label_Search;
-        private TextBox textBox_Search;
-        private Button button_Search;
+        private System.Windows.Forms.TextBox textBox_Search;
+        private System.Windows.Forms.Button buttonSearch;
     }
 }

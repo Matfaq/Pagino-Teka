@@ -261,7 +261,7 @@ namespace Pagino_Teka.Database
         private List<int> GetGenreIdsForBook(int bookId)
         {
             var genreIds = new List<int>();
-            string sql = "SELECT genre_id FROM BookGenres WHERE book_id = @book_id";
+            string sql = "SELECT genre_id FROM BookGenresMap WHERE book_id = @book_id";
             var dt = _db.ExecuteQuery(sql, new SqliteParameter("@book_id", bookId));
             foreach (DataRow r in dt.Rows)
                 genreIds.Add(Convert.ToInt32(r["genre_id"]));

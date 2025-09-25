@@ -438,7 +438,23 @@ namespace Pagino_Teka
 
         private void poTytuleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            using var searchForm = new SearchForm();
+            if (searchForm.ShowDialog() == DialogResult.OK)
+            {
+                string fraza = searchForm.SearchText;
+                var wyniki = BookService.Instance.FindBooksByTitle(fraza);
+                booksPanel.Controls.Clear();
+                foreach (var book in wyniki)
+                {
+                    var panel = CreateItemPanel(
+                        book.Image,
+                        book.Title,
+                        book.AuthorName,
+                        book.Description
+                    );
+                    booksPanel.Controls.Add(panel);
+                }
+            }
         }
     }
 }
